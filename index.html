@@ -5684,5 +5684,152 @@ body{
 })();
 </script>
 
+
+
+<style id="nt-final-ab-visible-dropdown-compact-fix">
+/* FINAL USER REQUEST PATCH: only make Signal A/B results visible on button press + compact desktop fit */
+.nt-ab-results-panel{
+  display:none;
+  margin:8px 0 8px!important;
+  border:1px solid rgba(34,197,94,.45)!important;
+  background:linear-gradient(180deg,rgba(2,17,31,.98),rgba(15,23,42,.94))!important;
+  border-radius:12px!important;
+  padding:9px!important;
+  box-shadow:0 12px 30px rgba(0,0,0,.28)!important;
+}
+.nt-ab-results-panel.show{display:block!important;animation:ntDrop .18s ease-out}
+@keyframes ntDrop{from{opacity:.15;transform:translateY(-6px)}to{opacity:1;transform:translateY(0)}}
+.nt-ab-results-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:7px;color:#22c55e;font-size:.68rem;font-weight:950;letter-spacing:.08em;text-transform:uppercase}
+.nt-ab-results-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.nt-ab-card{border:1px solid rgba(56,189,248,.30);border-radius:10px;background:rgba(2,6,23,.62);padding:8px;min-width:0}
+.nt-ab-card h4{margin:0 0 6px!important;display:flex!important;justify-content:space-between!important;align-items:center!important;gap:6px!important;color:#e0f2fe!important;font-size:.74rem!important;letter-spacing:.06em!important;text-transform:uppercase!important}
+.nt-ab-card h4 b{color:#22c55e!important}.nt-ab-card.sell h4 b{color:#ef4444!important}
+.nt-ab-levels{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:5px}
+.nt-ab-levels div{border:1px solid rgba(148,163,184,.16);border-radius:8px;background:rgba(15,23,42,.85);padding:5px 6px;min-height:35px}
+.nt-ab-levels span{display:block;color:#94a3b8;font-size:.50rem;font-weight:950;text-transform:uppercase;letter-spacing:.08em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.nt-ab-levels strong{display:block;color:#fff;font-size:.72rem;font-weight:950;line-height:1.2;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.nt-ab-card small{display:block;margin-top:5px;color:#9ca3af;font-size:.56rem;font-weight:800;line-height:1.25}
+.nt-ab-lock{color:#fbbf24!important}.nt-ab-win{color:#22c55e!important}.nt-ab-card.sell .nt-ab-win{color:#22c55e!important}
+@media(min-width:1200px){
+  body{font-size:12px!important;overflow:hidden!important}
+  header{min-height:52px!important;padding:7px 12px!important}
+  .container{padding:7px 16px 8px 86px!important;max-height:calc(100vh - 58px)!important;overflow:auto!important;max-width:1280px!important}
+  .grid{gap:7px!important}.card{padding:9px!important;border-radius:12px!important}.card h3{font-size:.73rem!important;margin-bottom:7px!important}
+  .daily-signal-grid{grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:6px!important}.daily-signal-card{min-height:52px!important;padding:7px!important}.daily-signal-card b{font-size:.82rem!important}.daily-signal-card span{font-size:.60rem!important;line-height:1.22!important}.daily-signal-card small{font-size:.52rem!important}
+  .nt-signal-generate{padding:9px 12px!important;margin:5px 0!important}.nt-signal-count{padding:6px!important;font-size:.64rem!important}.nt-signal-row{gap:6px!important;margin-bottom:6px!important}
+  canvas#mainChart{height:225px!important;min-height:225px!important}#mainChart{min-height:225px!important}.span-8{grid-column:span 8!important}.span-4{grid-column:span 4!important}
+  .premium-locked::after{font-size:.68rem!important;padding:12px!important}.nt-side-nav{top:190px!important;gap:7px!important}.nt-side-nav button{padding:8px 7px!important;font-size:.68rem!important;min-width:56px!important}
+  .tester-badge{padding:3px 7px!important;font-size:.56rem!important}.controls select,.controls button{min-height:34px!important;padding-top:6px!important;padding-bottom:6px!important}
+}
+@media(max-width:900px){.nt-ab-results-grid{grid-template-columns:1fr}.nt-ab-levels{grid-template-columns:repeat(2,minmax(0,1fr))}}
+</style>
+<script id="nt-final-force-signal-dropdown-visible-fix">
+(function(){
+  const $=id=>document.getElementById(id);
+  const OWNER_EMAILS=['engobeni842@gmail.com','emusiyiwa844@gmail.com','emmanuelngobeni@gmail.com'];
+  function userEmail(){
+    return (localStorage.getItem('nt_current_email')||localStorage.getItem('nt_last_signup_email')||$('userEmail')?.textContent||document.body.innerText.match(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/i)?.[0]||'guest').trim().toLowerCase();
+  }
+  function plan(){
+    const e=userEmail();
+    const txt=((document.body.innerText||'')+' '+(localStorage.getItem('nt_plan')||'')+' '+(localStorage.getItem('nettrack_plan')||'')).toUpperCase();
+    if(OWNER_EMAILS.includes(e)) return {name:'OWNER',max:8,tp:3,label:'OWNER • 8 signals/day • TP1 + TP2 + TP3'};
+    if(txt.includes('PREMIUM')||txt.includes('ELITE')) return {name:'PREMIUM',max:8,tp:3,label:'PREMIUM • 8 signals/day • TP1 + TP2 + TP3'};
+    if(txt.includes('PRO PLAN')||txt.includes(' PLAN PRO')||txt.includes(' PRO ')) return {name:'PRO',max:4,tp:2,label:'PRO • 4 signals/day • TP1 + TP2'};
+    if(txt.includes('BASIC')) return {name:'BASIC',max:2,tp:1,label:'BASIC • 2 signals/day • TP1'};
+    return {name:'FREE TESTER',max:2,tp:1,label:'FREE TESTER • 2 signals/day • TP1 only'};
+  }
+  function dayKey(){return 'nt_ab_click_count_v3_'+userEmail()+'_'+new Date().toISOString().slice(0,10)}
+  function pairKey(){return 'nt_ab_current_pair_v3_'+userEmail()+'_'+new Date().toISOString().slice(0,10)}
+  function getCount(){return Number(localStorage.getItem(dayKey())||0)||0}
+  function setCount(n){localStorage.setItem(dayKey(),String(n))}
+  function getPair(){try{return JSON.parse(localStorage.getItem(pairKey())||'[]')}catch(e){return[]}}
+  function setPair(a){localStorage.setItem(pairKey(),JSON.stringify(a.slice(0,2)))}
+  function toast(t,s){ if(typeof window.toast==='function') return window.toast(t,s); alert(t+(s?'\n'+s:'')); }
+  function activeSymbol(){return ($('assetSelect')?.value||window.SYMBOL||'BTCUSDT').toUpperCase()}
+  function activeTF(){return $('tfSelect')?.value||window.INTERVAL||'1m'}
+  function activeBroker(){return $('brokerSelect')?.value||localStorage.getItem('nt_last_platform')||'Binance'}
+  function price(){
+    const live=($('livePrice')?.textContent||'').replace(/[^0-9.]/g,'');
+    const p=parseFloat(live); if(isFinite(p)&&p>0) return p;
+    try{const c=window.candles||window.CANDLES||[]; const last=c[c.length-1]; const v=Number(last?.close||last?.c||last?.price); if(isFinite(v)&&v>0) return v;}catch(e){}
+    const s=activeSymbol(); if(s.includes('BTC'))return 60162.02; if(s.includes('ETH'))return 1580.12; if(s.includes('BNB'))return 565.15; if(s.includes('SOL'))return 132.40; if(s.includes('JPY'))return 157.82; return 1.08975;
+  }
+  function fmt(sym,n){
+    if(!isFinite(n))return'--'; sym=String(sym).toUpperCase();
+    if(sym.includes('JPY')) return Number(n).toFixed(3);
+    if(sym.includes('BTC')||sym.includes('ETH')||sym.includes('BNB')||sym.includes('SOL')||sym.includes('USDT')) return Number(n).toFixed(n>=100?2:4);
+    return Number(n).toFixed(5);
+  }
+  function side(slot){
+    let t=($('signalText')?.textContent||' '+$('marketBias')?.textContent||'').toUpperCase();
+    if(t.includes('SELL')) return 'SELL';
+    if(t.includes('BUY')||t.includes('BULL')) return 'BUY';
+    return slot==='B'?'SELL':'BUY';
+  }
+  function conf(slot){
+    let c=parseInt(($('confValue')?.textContent||'').replace(/\D/g,''),10);
+    if(!isFinite(c)||c<30)c=68;
+    if(slot==='B')c-=4;
+    return Math.max(52,Math.min(94,c));
+  }
+  function make(slot){
+    const sym=activeSymbol(), tf=activeTF(), broker=activeBroker(), sd=side(slot), p=price();
+    const isCrypto=sym.includes('USDT')||['BTCUSDT','ETHUSDT','BNBUSDT','SOLUSDT'].includes(sym);
+    const risk=p*(isCrypto?0.0035:(sym.includes('JPY')?0.0020:0.0012));
+    const dir=sd==='SELL'?-1:1;
+    const entry=p+(slot==='B'?risk*.18*dir:0);
+    return {slot,side:sd,sym,tf,broker,entry:fmt(sym,entry),sl:fmt(sym,entry-risk*dir),tp1:fmt(sym,entry+risk*1.8*dir),tp2:fmt(sym,entry+risk*2.8*dir),tp3:fmt(sym,entry+risk*4*dir),conf:conf(slot),rr:'1:1.8',time:new Date().toLocaleTimeString()};
+  }
+  function card(sig,info){
+    const tp2=info.tp>=2?sig.tp2:'🔒 Pro';
+    const tp3=info.tp>=3?sig.tp3:'🔒 Premium';
+    return '<div class="nt-ab-card '+(sig.side==='SELL'?'sell':'buy')+'"><h4><span>SIGNAL '+sig.slot+'</span><b>'+sig.side+'</b></h4><div class="nt-ab-levels">'+
+      '<div><span>Entry</span><strong>'+sig.entry+'</strong></div>'+
+      '<div><span>Stop Loss</span><strong>'+sig.sl+'</strong></div>'+
+      '<div><span>Take Profit 1</span><strong>'+sig.tp1+'</strong></div>'+
+      '<div><span>Take Profit 2</span><strong class="'+(info.tp>=2?'':'nt-ab-lock')+'">'+tp2+'</strong></div>'+
+      '<div><span>Take Profit 3</span><strong class="'+(info.tp>=3?'':'nt-ab-lock')+'">'+tp3+'</strong></div>'+
+      '<div><span>Win Chance</span><strong class="nt-ab-win">'+sig.conf+'%</strong></div>'+
+      '</div><small>'+sig.sym+' • '+sig.tf+' • '+sig.broker+' • Risk/Reward '+sig.rr+' • '+sig.time+'</small></div>';
+  }
+  function ensurePanel(){
+    const panel=$('dailySignalPanel'); if(!panel)return null;
+    let box=$('ntABVisibleResults');
+    if(!box){box=document.createElement('div'); box.id='ntABVisibleResults'; box.className='nt-ab-results-panel'; const grid=panel.querySelector('.daily-signal-grid'); if(grid) panel.insertBefore(box,grid); else panel.appendChild(box);}
+    return box;
+  }
+  function render(show){
+    const info=plan(), pair=getPair(), count=getCount(), box=ensurePanel();
+    if($('ntSignalCount')) $('ntSignalCount').textContent=count+'/'+info.max+' used today • '+info.label;
+    if(!box)return;
+    if(pair.length&&show!==false){
+      box.innerHTML='<div class="nt-ab-results-head"><span>Generated Signal A + B Results</span><span>'+count+'/'+info.max+' used today</span></div><div class="nt-ab-results-grid">'+pair.map(x=>card(x,info)).join('')+'</div>';
+      box.classList.add('show');
+    }else{box.innerHTML=''; box.classList.remove('show');}
+    const a=pair[0], b=pair[1];
+    if(a&&$('signalAName'))$('signalAName').textContent='SIGNAL A: '+a.side;
+    if(a&&$('signalADetail'))$('signalADetail').innerHTML='Entry '+a.entry+' • SL '+a.sl+' • TP1 '+a.tp1+' • Win '+a.conf+'%';
+    if(b&&$('signalBName'))$('signalBName').textContent='SIGNAL B: '+b.side;
+    if(b&&$('signalBDetail'))$('signalBDetail').innerHTML='Entry '+b.entry+' • SL '+b.sl+' • TP1 '+b.tp1+' • Win '+b.conf+'%';
+  }
+  function generate(e){
+    if(e){e.preventDefault(); e.stopPropagation(); if(e.stopImmediatePropagation)e.stopImmediatePropagation();}
+    const info=plan(); let count=getCount();
+    if(count+2>info.max){toast('Daily signal limit reached',info.label+' — upgrade subscription for more signals and TP levels.'); render(true); return false;}
+    const pair=[make('A'),make('B')]; setPair(pair); setCount(count+2); render(true);
+    toast('Signal A + B generated','Entry, Stop Loss, Take Profit and Win Chance are visible under the button.');
+    return false;
+  }
+  document.addEventListener('click',function(e){const btn=e.target.closest&&e.target.closest('#ntGenerateSignalBtn,.nt-signal-generate'); if(btn){return generate(e)}},true);
+  function bind(){
+    const btn=$('ntGenerateSignalBtn'); if(btn){btn.type='button'; btn.textContent='GENERATE SIGNAL A + B'; btn.onclick=null;}
+    ensurePanel(); render(getPair().length>0);
+  }
+  document.addEventListener('DOMContentLoaded',bind); setInterval(bind,1200);
+  window.ntForceSignalABResults={generate,render};
+})();
+</script>
+
 </body>
 </html>
