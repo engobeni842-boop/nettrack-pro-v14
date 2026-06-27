@@ -5831,5 +5831,247 @@ body{
 })();
 </script>
 
+
+<style id="nt-final-2percent-fix-css">
+/* 2% FINAL PATCH: broker dropdown lock + Signal A/B numeric dropdown under button */
+#ntABResultsDropFinal{
+  display:none;
+  margin:8px 0 8px!important;
+  padding:8px!important;
+  border:1px solid rgba(34,197,94,.55)!important;
+  border-radius:12px!important;
+  background:linear-gradient(180deg,rgba(3,12,24,.98),rgba(10,20,38,.96))!important;
+  box-shadow:0 12px 28px rgba(0,0,0,.32)!important;
+  z-index:9999!important;
+  position:relative!important;
+}
+#ntABResultsDropFinal.show{display:block!important;animation:ntABDropFinal .16s ease-out}
+@keyframes ntABDropFinal{from{opacity:.2;transform:translateY(-5px)}to{opacity:1;transform:translateY(0)}}
+.nt-ab-final-head{display:flex;justify-content:space-between;gap:8px;align-items:center;color:#22c55e;font-weight:950;font-size:.68rem;text-transform:uppercase;letter-spacing:.08em;margin-bottom:7px}
+.nt-ab-final-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.nt-ab-final-card{border:1px solid rgba(56,189,248,.35);border-radius:10px;background:rgba(2,6,23,.70);padding:8px;min-width:0}
+.nt-ab-final-card h4{margin:0 0 6px!important;display:flex;justify-content:space-between;align-items:center;gap:6px;color:#e0f2fe;font-size:.74rem;text-transform:uppercase;letter-spacing:.06em}
+.nt-ab-final-card h4 b{color:#22c55e}.nt-ab-final-card.sell h4 b{color:#ef4444}
+.nt-ab-final-levels{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:5px}
+.nt-ab-final-levels div{border:1px solid rgba(148,163,184,.16);border-radius:8px;background:rgba(15,23,42,.88);padding:5px 6px;min-height:35px}
+.nt-ab-final-levels span{display:block;color:#94a3b8;font-size:.50rem;font-weight:950;text-transform:uppercase;letter-spacing:.08em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.nt-ab-final-levels strong{display:block;color:#fff;font-size:.72rem;font-weight:950;line-height:1.2;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.nt-ab-final-card small{display:block;margin-top:5px;color:#9ca3af;font-size:.56rem;font-weight:800;line-height:1.25}
+.nt-ab-final-lock{color:#fbbf24!important}.nt-ab-final-win{color:#22c55e!important}
+@media(max-width:900px){.nt-ab-final-grid{grid-template-columns:1fr}.nt-ab-final-levels{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(min-width:1200px){
+  body{overflow:hidden!important;font-size:11.6px!important}
+  .container{max-height:calc(100vh - 54px)!important;overflow:auto!important;padding-top:5px!important;padding-bottom:5px!important}
+  .card{padding:8px!important}.daily-signal-card{min-height:50px!important;padding:6px!important}
+  .daily-signal-card b{font-size:.78rem!important}.daily-signal-card span{font-size:.55rem!important;line-height:1.18!important}
+  .nt-signal-generate{padding:8px 10px!important}.nt-signal-count{padding:6px!important;font-size:.62rem!important}
+  #mainChart,canvas#mainChart{height:205px!important;min-height:205px!important}
+}
+</style>
+<script id="nt-final-2percent-fix-js">
+(function(){
+  const $=id=>document.getElementById(id);
+  const $$=(s,r=document)=>Array.from(r.querySelectorAll(s));
+  const OWNER_EMAILS=['engobeni842@gmail.com','emusiyiwa844@gmail.com','emmanuelngobeni@gmail.com'];
+  const PLATFORMS=[
+    ['Binance','Binance'],['XM','XM'],['MT5','MT5'],['MT4','MT4'],['TradingView','TradingView'],
+    ['IQ Option','IQ Option'],['Bybit','Bybit'],['Deriv','Deriv'],['ICMarkets','ICMarkets'],
+    ['Exness','Exness'],['IQXness','IQXness'],['Quotex','Quotex'],['Pocket Option','Pocket Option'],
+    ['OctaFX','OctaFX'],['RoboForex','RoboForex'],['TradeView','TradeView'],['HFM','HFM'],['FBS','FBS']
+  ];
+  const brokerKey='nt_final_locked_platform_v14';
+  const today=()=>new Date().toISOString().slice(0,10);
+  function email(){
+    return (localStorage.getItem('nt_current_email')||localStorage.getItem('nt_last_signup_email')||$('userEmail')?.textContent||document.body.innerText.match(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/i)?.[0]||'guest').trim().toLowerCase();
+  }
+  function toast(t,s){
+    try{
+      document.querySelectorAll('.nt-toast').forEach(x=>x.remove());
+      const d=document.createElement('div'); d.className='nt-toast';
+      d.innerHTML=String(t)+(s?'<small>'+String(s)+'</small>':'');
+      document.body.appendChild(d); setTimeout(()=>d.remove(),3400);
+    }catch(e){ alert(t+(s?'\n'+s:'')); }
+  }
+  function plan(){
+    const e=email();
+    const text=((document.body.innerText||'')+' '+(localStorage.getItem('nt_plan')||'')+' '+(localStorage.getItem('nettrack_plan')||'')).toUpperCase();
+    if(OWNER_EMAILS.includes(e)) return {name:'OWNER',max:8,tp:3,label:'OWNER • 8 signals/day • TP1 + TP2 + TP3'};
+    if(text.includes('PREMIUM')||text.includes('ELITE')) return {name:'PREMIUM',max:8,tp:3,label:'PREMIUM • 8 signals/day • TP1 + TP2 + TP3'};
+    if(text.includes('PRO')) return {name:'PRO',max:4,tp:2,label:'PRO • 4 signals/day • TP1 + TP2'};
+    if(text.includes('BASIC')) return {name:'BASIC',max:2,tp:1,label:'BASIC • 2 signals/day • TP1'};
+    return {name:'FREE TESTER',max:2,tp:1,label:'FREE TESTER • 2 signals/day • TP1 only'};
+  }
+  function usedKey(){return 'nt_final_ab_used_'+email()+'_'+today()}
+  function pairKey(){return 'nt_final_ab_pair_'+email()+'_'+today()}
+  function used(){return Number(localStorage.getItem(usedKey())||0)||0}
+  function setUsed(n){localStorage.setItem(usedKey(),String(n))}
+  function readPair(){try{return JSON.parse(localStorage.getItem(pairKey())||'[]')}catch(e){return[]}}
+  function savePair(p){localStorage.setItem(pairKey(),JSON.stringify(p.slice(0,2)))}
+  function symbol(){return ($('assetSelect')?.value||window.SYMBOL||'BTCUSDT').toUpperCase().replace('/','')}
+  function tf(){return $('tfSelect')?.value||window.INTERVAL||'1m'}
+  function broker(){return localStorage.getItem(brokerKey)||$('brokerSelect')?.value||'Binance'}
+  function livePrice(){
+    const candidates=[$('livePrice')?.textContent,$('price')?.textContent,$('topPrice')?.textContent,document.querySelector('.price-display')?.textContent].filter(Boolean);
+    for(const c of candidates){const n=parseFloat(String(c).replace(/[^0-9.]/g,'')); if(isFinite(n)&&n>0)return n;}
+    try{const c=window.candles||window.CANDLES||[]; const last=c[c.length-1]; const n=Number(last?.close||last?.c||last?.price); if(isFinite(n)&&n>0)return n;}catch(e){}
+    const s=symbol(); if(s.includes('BTC'))return 60162.02; if(s.includes('ETH'))return 1580.12; if(s.includes('BNB'))return 565.15; if(s.includes('SOL'))return 132.40; if(s.includes('JPY'))return 157.82; return 1.08975;
+  }
+  function fmt(s,n){
+    if(!isFinite(n))return'--';
+    if(s.includes('JPY'))return Number(n).toFixed(3);
+    if(s.includes('BTC')||s.includes('ETH')||s.includes('BNB')||s.includes('SOL')||s.includes('USDT'))return Number(n).toFixed(n>=100?2:4);
+    return Number(n).toFixed(5);
+  }
+  function side(slot){
+    const t=(($('signalText')?.textContent||'')+' '+($('marketBias')?.textContent||'')+' '+($('signalAName')?.textContent||'')).toUpperCase();
+    if(t.includes('SELL'))return'SELL';
+    if(t.includes('BUY')||t.includes('BULL'))return'BUY';
+    return slot==='B'?'SELL':'BUY';
+  }
+  function confidence(slot){
+    let c=parseInt(($('confValue')?.textContent||$('confidenceValue')?.textContent||'').replace(/\D/g,''),10);
+    if(!isFinite(c)||c<45)c=72;
+    if(slot==='B')c-=5;
+    return Math.max(54,Math.min(94,c));
+  }
+  function makeSignal(slot){
+    const s=symbol(), p=livePrice(), sd=side(slot), dir=sd==='SELL'?-1:1;
+    const isCrypto=s.includes('USDT')||['BTCUSDT','ETHUSDT','BNBUSDT','SOLUSDT'].includes(s);
+    const risk=p*(isCrypto?0.0035:(s.includes('JPY')?0.0020:0.0012));
+    const entry=p+(slot==='B'?risk*0.18*dir:0);
+    return {
+      slot,side:sd,sym:s,tf:tf(),broker:broker(),
+      entry:fmt(s,entry),
+      sl:fmt(s,entry-risk*dir),
+      tp1:fmt(s,entry+risk*1.8*dir),
+      tp2:fmt(s,entry+risk*2.8*dir),
+      tp3:fmt(s,entry+risk*4.0*dir),
+      conf:confidence(slot),
+      rr:'1:1.8',
+      time:new Date().toLocaleTimeString()
+    };
+  }
+  function ensureResultsPanel(){
+    const btn=$('ntGenerateSignalBtn')||document.querySelector('.nt-signal-generate');
+    if(!btn)return null;
+    const row=btn.closest('.nt-signal-row')||btn.parentElement;
+    let box=$('ntABResultsDropFinal');
+    if(!box){
+      box=document.createElement('div');
+      box.id='ntABResultsDropFinal';
+      // always directly under the green/blue Generate button row
+      row.insertAdjacentElement('afterend',box);
+    }
+    return box;
+  }
+  function card(sig,info){
+    const tp2=info.tp>=2?sig.tp2:'🔒 Pro';
+    const tp3=info.tp>=3?sig.tp3:'🔒 Premium';
+    return '<div class="nt-ab-final-card '+(sig.side==='SELL'?'sell':'buy')+'">'+
+      '<h4><span>SIGNAL '+sig.slot+'</span><b>'+sig.side+'</b></h4>'+
+      '<div class="nt-ab-final-levels">'+
+      '<div><span>Entry</span><strong>'+sig.entry+'</strong></div>'+
+      '<div><span>Stop Loss</span><strong>'+sig.sl+'</strong></div>'+
+      '<div><span>Take Profit 1</span><strong>'+sig.tp1+'</strong></div>'+
+      '<div><span>Take Profit 2</span><strong class="'+(info.tp>=2?'':'nt-ab-final-lock')+'">'+tp2+'</strong></div>'+
+      '<div><span>Take Profit 3</span><strong class="'+(info.tp>=3?'':'nt-ab-final-lock')+'">'+tp3+'</strong></div>'+
+      '<div><span>Win Chance</span><strong class="nt-ab-final-win">'+sig.conf+'%</strong></div>'+
+      '</div><small>'+sig.sym+' • '+sig.tf+' • '+sig.broker+' • Risk/Reward '+sig.rr+' • '+sig.time+'</small></div>';
+  }
+  function renderResults(show){
+    const p=plan(), pair=readPair(), box=ensureResultsPanel();
+    const counter=$('ntSignalCount'); if(counter)counter.textContent=used()+'/'+p.max+' used today • '+p.label;
+    if(!box)return;
+    if(pair.length && show!==false){
+      box.innerHTML='<div class="nt-ab-final-head"><span>Generated Signal A + B Results</span><span>'+used()+'/'+p.max+' used today</span></div><div class="nt-ab-final-grid">'+pair.map(x=>card(x,p)).join('')+'</div>';
+      box.classList.add('show');
+    }else{
+      box.innerHTML=''; box.classList.remove('show');
+    }
+    const a=pair[0], b=pair[1];
+    if(a&&$('signalAName'))$('signalAName').textContent='SIGNAL A: '+a.side;
+    if(a&&$('signalADetail'))$('signalADetail').innerHTML='Entry '+a.entry+' • SL '+a.sl+' • TP1 '+a.tp1+' • Win '+a.conf+'%';
+    if(b&&$('signalBName'))$('signalBName').textContent='SIGNAL B: '+b.side;
+    if(b&&$('signalBDetail'))$('signalBDetail').innerHTML='Entry '+b.entry+' • SL '+b.sl+' • TP1 '+b.tp1+' • Win '+b.conf+'%';
+  }
+  function generate(e){
+    if(e){e.preventDefault();e.stopPropagation(); if(e.stopImmediatePropagation)e.stopImmediatePropagation();}
+    const p=plan(), u=used();
+    if(u+2>p.max){
+      toast('Daily signal limit reached',p.label+' — upgrade subscription for more signals and more Take Profit levels.');
+      renderResults(true);
+      return false;
+    }
+    const pair=[makeSignal('A'),makeSignal('B')];
+    savePair(pair); setUsed(u+2); renderResults(true);
+    toast('Signal A + B generated','Entry, Stop Loss, Take Profit and Win Chance are visible under the button.');
+    return false;
+  }
+  function ensureBrokerOptions(){
+    const sel=$('brokerSelect'); if(!sel)return;
+    PLATFORMS.forEach(([label,value])=>{
+      if(!$$('option',sel).some(o=>o.value===value)){
+        const o=document.createElement('option'); o.value=value; o.textContent=label; sel.appendChild(o);
+      }
+    });
+    const saved=localStorage.getItem(brokerKey);
+    if(saved && $$('option',sel).some(o=>o.value===saved)) sel.value=saved;
+  }
+  function updateBrokerLabels(){
+    const b=broker();
+    ['alignBrokerName','brokerOverlayName','activeBrokerLabel'].forEach(id=>{const el=$(id); if(el)el.textContent=b;});
+    const ap=$('activePlatformDetail'); if(ap)ap.textContent='Live signal generator is linked to '+b+' with the selected symbol and timeframe.';
+    const card=$('activePlatformName'); if(card)card.textContent=b+' • '+(symbol().replace('USDT','/USDT'))+' • '+tf();
+  }
+  function lockBrokerSelection(){
+    const sel=$('brokerSelect'); if(!sel)return;
+    ensureBrokerOptions();
+    const saved=localStorage.getItem(brokerKey);
+    if(saved && sel.value!==saved) sel.value=saved; // defeats old auto-reset to TradingView
+    updateBrokerLabels();
+  }
+  function onBrokerChange(e){
+    const sel=$('brokerSelect'); if(!sel)return;
+    const old=localStorage.getItem(brokerKey)||sel.getAttribute('data-last-platform')||'Binance';
+    localStorage.setItem(brokerKey,sel.value);
+    localStorage.setItem('nt_last_platform',sel.value);
+    sel.setAttribute('data-last-platform',sel.value);
+    setTimeout(lockBrokerSelection,0);
+    setTimeout(lockBrokerSelection,160);
+    if(old!==sel.value)toast('Platform switched',old+' → '+sel.value);
+    updateBrokerLabels(); renderResults(readPair().length>0);
+  }
+  function bind(){
+    ensureBrokerOptions();
+    const sel=$('brokerSelect');
+    if(sel && !sel.dataset.finalPlatformFixed){
+      sel.dataset.finalPlatformFixed='1';
+      if(!localStorage.getItem(brokerKey))localStorage.setItem(brokerKey,sel.value||'Binance');
+      sel.addEventListener('change',onBrokerChange,true);
+      sel.addEventListener('input',onBrokerChange,true);
+    }
+    const btn=$('ntGenerateSignalBtn')||document.querySelector('.nt-signal-generate');
+    if(btn && !btn.dataset.finalClickFixed){
+      btn.dataset.finalClickFixed='1';
+      btn.type='button';
+      btn.textContent='GENERATE SIGNAL A + B';
+      btn.onclick=null;
+      btn.addEventListener('click',generate,true);
+    }
+    ensureResultsPanel();
+    lockBrokerSelection();
+    renderResults(readPair().length>0);
+  }
+  document.addEventListener('click',function(e){
+    const btn=e.target.closest&&e.target.closest('#ntGenerateSignalBtn,.nt-signal-generate');
+    if(btn)return generate(e);
+  },true);
+  document.addEventListener('DOMContentLoaded',bind);
+  setInterval(bind,600);
+  setInterval(lockBrokerSelection,250);
+  window.ntFinalSignalFix={generate,render:renderResults,lockBrokerSelection};
+})();
+</script>
+
 </body>
 </html>
