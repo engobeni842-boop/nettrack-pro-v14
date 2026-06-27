@@ -5346,12 +5346,87 @@ body{
   }
   function quotaKey(){return 'nt_signal_AB_'+email()+'_'+new Date().toISOString().slice(0,10)}
   function readSignals(){try{return JSON.parse(localStorage.getItem(quotaKey())||'[]')}catch(e){return[]}}
-  function saveSignals(a){localStorage.setItem(quotaKey(),JSON.stringify(a.slice(0,2)))}
+  function saveSignals(a){localStorage.setItem(quotaKey(),JSON.stringify(a.slice(0,planInfo().maxSignals)))}
+  function getPlanName(){
+    const txt=((document.body.innerText||'')+' '+(localStorage.getItem('nt_plan')||'')+' '+(localStorage.getItem('nettrack_plan')||'')).toUpperCase();
+    if(OWNER_EMAILS.includes(email())) return 'OWNER';
+    if(txt.includes('ELITE')) return 'ELITE';
+    if(txt.includes('PREMIUM')) return 'PREMIUM';
+    if(txt.includes('PRO PLAN')||txt.includes(' PRO ')||txt.includes('PLAN PRO')) return 'PRO';
+    if(txt.includes('BASIC')) return 'BASIC';
+    return 'FREE TESTER';
+  }
+  function planInfo(){
+    const plan=getPlanName();
+    if(plan==='OWNER') return {plan,maxSignals:8,tpLevels:3,label:'OWNER ACCESS • 8 signals/day • TP1 + TP2 + TP3'};
+    if(plan==='ELITE'||plan==='PREMIUM') return {plan,maxSignals:8,tpLevels:3,label:'PREMIUM • 8 signals/day • TP1 + TP2 + TP3'};
+    if(plan==='PRO') return {plan,maxSignals:4,tpLevels:2,label:'PRO • 4 signals/day • TP1 + TP2'};
+    if(plan==='BASIC') return {plan,maxSignals:2,tpLevels:1,label:'BASIC • 2 signals/day • TP1'};
+    return {plan,maxSignals:2,tpLevels:1,label:'FREE TESTER • 2 signals/day • TP1 only'};
+  }
   function sideFromEngine(){const sig=($('signalText')?.textContent||'NEUTRAL').toUpperCase(); if(sig.includes('BUY'))return'BUY'; if(sig.includes('SELL'))return'SELL'; const c=parseInt(($('confValue')?.textContent||'0').replace(/\D/g,''),10)||0; return c%2?'BUY':'SELL'}
-  function mkSignal(slot){const sym=($('assetSelect')?.value||window.SYMBOL||'BTCUSDT'); const tf=($('tfSelect')?.value||window.INTERVAL||'1m'); const broker=($('brokerSelect')?.value||'Binance'); const side=sideFromEngine(); const priceTxt=($('livePrice')?.textContent||'').replace(/[^0-9.]/g,''); const price=parseFloat(priceTxt)||((window.candles&&window.candles.length)?window.candles[window.candles.length-1].close:0); const conf=parseInt(($('confValue')?.textContent||'54').replace(/\D/g,''),10)||54; let sl='chart SL',tp='chart TP'; if(price){const risk=price*(sym.includes('USDT')?0.0035:0.0012); sl=(side==='BUY'?price-risk:price+risk).toFixed(price>100?2:5); tp=(side==='BUY'?price+risk*1.8:price-risk*1.8).toFixed(price>100?2:5)} return {slot,side,sym,tf,broker,conf,price:price?price.toFixed(price>100?2:5):'live',sl,tp,time:new Date().toLocaleTimeString()}}
-  function renderSignals(){const arr=readSignals(); const a=arr[0], b=arr[1]; if($('signalAName')) $('signalAName').textContent=a?('SIGNAL A: '+a.side):'PRESS GENERATE'; if($('signalADetail')) $('signalADetail').textContent=a?`${a.sym} • ${a.tf} • ${a.broker} • Entry ${a.price} • SL ${a.sl} • TP ${a.tp} • ${a.conf}%`:'Press the Signal A+B button. Daily limit: 2 signals.'; if($('signalBName')) $('signalBName').textContent=b?('SIGNAL B: '+b.side):(a?'PRESS AGAIN FOR B':'WAITING'); if($('signalBDetail')) $('signalBDetail').textContent=b?`${b.sym} • ${b.tf} • ${b.broker} • Entry ${b.price} • SL ${b.sl} • TP ${b.tp} • ${b.conf}%`:'Second signal appears when you press the generator again. Max 2/day.'; const count=$('ntSignalCount'); if(count) count.textContent=`${arr.length}/2 signals used today`; updatePlatformLabels(); }
-  function generateSignal(){const arr=readSignals(); if(arr.length>=2){toast('Daily signal limit reached','Signal A and Signal B already generated today. Come back tomorrow.'); renderSignals(); return} const slot=arr.length===0?'A':'B'; const sig=mkSignal(slot); arr.push(sig); saveSignals(arr); renderSignals(); toast('Signal '+slot+' generated', `${sig.side} ${sig.sym} on ${sig.broker} • ${sig.tf}`); }
-  function ensureSignalButton(){const panel=$('dailySignalPanel'); if(!panel||$('ntGenerateSignalBtn')) return; const h=panel.querySelector('h3')||panel.firstElementChild; const wrap=document.createElement('div'); wrap.className='nt-signal-row'; wrap.innerHTML='<button type="button" class="nt-signal-generate" id="ntGenerateSignalBtn">GENERATE SIGNAL A + B</button><div class="nt-signal-count" id="ntSignalCount">0/2 signals used today</div>'; if(h) h.insertAdjacentElement('afterend',wrap); else panel.prepend(wrap); $('ntGenerateSignalBtn').onclick=generateSignal; renderSignals(); }
+  function fmtNum(sym,n){ if(!isFinite(n)) return 'live'; return Number(n).toFixed(n>100?2:(sym.includes('JPY')?3:5)); }
+  function mkSignal(slot){
+    const sym=($('assetSelect')?.value||window.SYMBOL||'BTCUSDT');
+    const tf=($('tfSelect')?.value||window.INTERVAL||'1m');
+    const broker=($('brokerSelect')?.value||'Binance');
+    const baseSide=sideFromEngine();
+    const side=(slot==='B' && baseSide==='NEUTRAL')?'SELL':baseSide;
+    const priceTxt=($('livePrice')?.textContent||'').replace(/[^0-9.]/g,'');
+    const price=parseFloat(priceTxt)||((window.candles&&window.candles.length)?window.candles[window.candles.length-1].close:0);
+    const conf=parseInt(($('confValue')?.textContent||'54').replace(/\D/g,''),10)||54;
+    let entry='live', sl='live', tp1='live', tp2='SUBSCRIPTION', tp3='PREMIUM';
+    if(price){
+      const risk=price*(sym.includes('USDT')?0.0035:(sym.includes('JPY')?0.002:0.0012));
+      const dir=side==='BUY'?1:-1;
+      entry=fmtNum(sym,price);
+      sl=fmtNum(sym,price-(risk*dir));
+      tp1=fmtNum(sym,price+(risk*1.8*dir));
+      tp2=fmtNum(sym,price+(risk*2.8*dir));
+      tp3=fmtNum(sym,price+(risk*4.0*dir));
+    }
+    const rr='1:1.8';
+    return {slot,side,sym,tf,broker,conf,entry,price:entry,sl,tp:tp1,tp1,tp2,tp3,rr,time:new Date().toLocaleTimeString()};
+  }
+  function signalLine(sig){
+    const info=planInfo();
+    const tp2=info.tpLevels>=2?` • TP2: ${sig.tp2}`:' • TP2: 🔒 Pro';
+    const tp3=info.tpLevels>=3?` • TP3: ${sig.tp3}`:' • TP3: 🔒 Premium';
+    return `${sig.sym} • ${sig.tf} • ${sig.broker} • Entry: ${sig.entry} • Stop Loss: ${sig.sl} • TP1: ${sig.tp1}${tp2}${tp3} • RR ${sig.rr} • ${sig.conf}%`;
+  }
+  function copySignal(sig){
+    const info=planInfo();
+    const lines=[`NetTrack Signal ${sig.slot}`,`${sig.side} ${sig.sym}`,`Broker: ${sig.broker}`,`TF: ${sig.tf}`,`Entry: ${sig.entry}`,`Stop Loss: ${sig.sl}`,`TP1: ${sig.tp1}`];
+    if(info.tpLevels>=2) lines.push(`TP2: ${sig.tp2}`); else lines.push('TP2: Locked - Pro subscription');
+    if(info.tpLevels>=3) lines.push(`TP3: ${sig.tp3}`); else lines.push('TP3: Locked - Premium subscription');
+    navigator.clipboard?.writeText(lines.join('\n')).then(()=>toast('Signal copied','Entry, SL and TP levels copied.')).catch(()=>toast('Copy ready',lines.join(' | ')));
+  }
+  function renderSignals(){
+    const arr=readSignals(); const a=arr[0], b=arr[1]; const info=planInfo();
+    if($('signalAName')) $('signalAName').textContent=a?('SIGNAL A: '+a.side):'PRESS GENERATE';
+    if($('signalADetail')) $('signalADetail').textContent=a?signalLine(a):'Press the Signal A+B button. Free/BASIC gives TP1 only. Pro/Premium unlock extra TP levels.';
+    if($('signalBName')) $('signalBName').textContent=b?('SIGNAL B: '+b.side):(a?'SIGNAL B READY':'WAITING');
+    if($('signalBDetail')) $('signalBDetail').textContent=b?signalLine(b):'Signal B appears from the same button. Daily limits are controlled by subscription.';
+    const count=$('ntSignalCount'); if(count) count.textContent=`${arr.length}/${info.maxSignals} used today • ${info.label}`;
+    const sub=$('patternSubscription')||$('subscriptionGuard')||$('planBadge'); if(sub) sub.textContent=info.label;
+    updatePlatformLabels();
+  }
+  function generateSignal(){
+    const info=planInfo(); let arr=readSignals();
+    if(arr.length>=info.maxSignals){toast('Daily signal limit reached',info.label+' — upgrade subscription to unlock more signals and TP levels.'); renderSignals(); return}
+    const firstSlot=arr.length===0?'A':String.fromCharCode(65+arr.length);
+    const needed=Math.min(2, info.maxSignals-arr.length);
+    for(let i=0;i<needed;i++){arr.push(mkSignal(String.fromCharCode(65+arr.length)));}
+    saveSignals(arr); renderSignals();
+    toast('Signal '+firstSlot+(needed===2?' + '+String.fromCharCode(64+arr.length):'')+' generated', info.label);
+  }
+  function ensureSignalButton(){
+    const panel=$('dailySignalPanel'); if(!panel||$('ntGenerateSignalBtn')) return;
+    const h=panel.querySelector('h3')||panel.firstElementChild; const wrap=document.createElement('div'); wrap.className='nt-signal-row';
+    wrap.innerHTML='<button type="button" class="nt-signal-generate" id="ntGenerateSignalBtn">GENERATE SIGNAL A + B</button><div class="nt-signal-count" id="ntSignalCount">0/2 signals used today • FREE TESTER • TP1 only</div>';
+    if(h) h.insertAdjacentElement('afterend',wrap); else panel.prepend(wrap);
+    $('ntGenerateSignalBtn').onclick=generateSignal; renderSignals();
+  }
   function updatePlatformLabels(){const broker=$('brokerSelect')?.value||'Binance', sym=$('assetSelect')?.value||'BTCUSDT', tf=$('tfSelect')?.value||'1m'; if($('patternPlatform')) $('patternPlatform').textContent=broker+' • '+sym+' • '+tf; if($('patternSync')) $('patternSync').textContent='Live signal generator is linked to the selected platform, symbol and timeframe.'; if($('brokerOverlayName')) $('brokerOverlayName').textContent=broker; if($('alignBrokerName')) $('alignBrokerName').textContent=broker; }
   const oldChangeBroker=window.changeBroker; window.changeBroker=function(){const old=localStorage.getItem('nt_last_platform')||''; if(typeof oldChangeBroker==='function') oldChangeBroker.apply(this,arguments); const cur=$('brokerSelect')?.value||'Binance'; localStorage.setItem('nt_last_platform',cur); updatePlatformLabels(); if(old&&old!==cur) toast('Platform switched',old+' → '+cur); renderSignals(); };
   function removeUnwanted(){['cloudUserFoundation','cloudUserBox','netTrackBotBox','walletBox','txBox','transactionBox','commissionBox','revenueBox'].forEach(id=>{const e=$(id); if(e)e.style.display='none'}); qa('h3,h4,b,small,span,div').forEach(e=>{const t=(e.textContent||'').trim().toLowerCase(); if(t==='cloud user foundation'||t==='nettrack wallet'||t==='transaction history'||t==='nettrack bot'){const box=e.closest('.card')||e.closest('[id]')||e.parentElement; if(box) box.style.display='none'}}); qa('button').forEach(b=>{const t=(b.textContent||'').toLowerCase(); if(t.includes('mark win')||t.includes('mark loss')||t.includes('mark close')) b.style.display='none'}); }
