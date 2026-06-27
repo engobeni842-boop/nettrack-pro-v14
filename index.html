@@ -5392,7 +5392,24 @@ body{
     const info=planInfo();
     const tp2=info.tpLevels>=2?` • TP2: ${sig.tp2}`:' • TP2: 🔒 Pro';
     const tp3=info.tpLevels>=3?` • TP3: ${sig.tp3}`:' • TP3: 🔒 Premium';
-    return `${sig.sym} • ${sig.tf} • ${sig.broker} • Entry: ${sig.entry} • Stop Loss: ${sig.sl} • TP1: ${sig.tp1}${tp2}${tp3} • RR ${sig.rr} • ${sig.conf}%`;
+    return `${sig.sym} • ${sig.tf} • ${sig.broker} • Entry: ${sig.entry} • Stop Loss: ${sig.sl} • TP1: ${sig.tp1}${tp2}${tp3} • RR ${sig.rr} • Win chance: ${sig.conf}%`;
+  }
+  function signalDetailHTML(sig){
+    const info=planInfo();
+    const tp2=info.tpLevels>=2 ? sig.tp2 : '🔒 Pro';
+    const tp3=info.tpLevels>=3 ? sig.tp3 : '🔒 Premium';
+    return `<div class="nt-signal-numbers">
+      <div class="nt-signal-market"><b>${sig.sym}</b><span>${sig.tf} • ${sig.broker}</span></div>
+      <div class="nt-number-grid">
+        <div><span>ENTRY</span><b>${sig.entry}</b></div>
+        <div><span>STOP LOSS</span><b>${sig.sl}</b></div>
+        <div><span>TAKE PROFIT 1</span><b>${sig.tp1}</b></div>
+        <div><span>TAKE PROFIT 2</span><b>${tp2}</b></div>
+        <div><span>TAKE PROFIT 3</span><b>${tp3}</b></div>
+        <div><span>WIN CHANCE</span><b>${sig.conf}%</b></div>
+      </div>
+      <small>Risk/Reward ${sig.rr} • ${info.label}</small>
+    </div>`;
   }
   function copySignal(sig){
     const info=planInfo();
@@ -5404,9 +5421,9 @@ body{
   function renderSignals(){
     const arr=readSignals(); const a=arr[0], b=arr[1]; const info=planInfo();
     if($('signalAName')) $('signalAName').textContent=a?('SIGNAL A: '+a.side):'PRESS GENERATE';
-    if($('signalADetail')) $('signalADetail').textContent=a?signalLine(a):'Press the Signal A+B button. Free/BASIC gives TP1 only. Pro/Premium unlock extra TP levels.';
+    if($('signalADetail')) { if(a) $('signalADetail').innerHTML=signalDetailHTML(a); else $('signalADetail').textContent='Press the Signal A+B button. Free/BASIC gives TP1 only. Pro/Premium unlock extra TP levels.'; }
     if($('signalBName')) $('signalBName').textContent=b?('SIGNAL B: '+b.side):(a?'SIGNAL B READY':'WAITING');
-    if($('signalBDetail')) $('signalBDetail').textContent=b?signalLine(b):'Signal B appears from the same button. Daily limits are controlled by subscription.';
+    if($('signalBDetail')) { if(b) $('signalBDetail').innerHTML=signalDetailHTML(b); else $('signalBDetail').textContent='Signal B appears from the same button. Daily limits are controlled by subscription.'; }
     const count=$('ntSignalCount'); if(count) count.textContent=`${arr.length}/${info.maxSignals} used today • ${info.label}`;
     const sub=$('patternSubscription')||$('subscriptionGuard')||$('planBadge'); if(sub) sub.textContent=info.label;
     updatePlatformLabels();
@@ -5439,6 +5456,19 @@ body{
 })();
 </script>
 <!-- /NETTRACK PRO V13.8.2 SIGNAL BUTTON + PLATFORM ROUTER + SOCKET FALLBACK FIX -->
+
+
+<style id="nt-signal-numbers-fix">
+.nt-signal-numbers{margin-top:5px!important;font-size:.68rem!important;line-height:1.25!important;color:#dbeafe!important}
+.nt-signal-market{display:flex!important;justify-content:space-between!important;align-items:center!important;gap:8px!important;margin-bottom:6px!important;color:#7dd3fc!important}
+.nt-signal-market b{font-size:.76rem!important;color:#38bdf8!important}.nt-signal-market span{font-size:.62rem!important;color:#94a3b8!important}
+.nt-number-grid{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:5px!important}
+.nt-number-grid div{border:1px solid rgba(56,189,248,.22)!important;background:rgba(2,6,23,.45)!important;border-radius:7px!important;padding:5px 6px!important;min-height:33px!important}
+.nt-number-grid span{display:block!important;font-size:.54rem!important;color:#94a3b8!important;letter-spacing:.08em!important;font-weight:900!important;text-transform:uppercase!important}
+.nt-number-grid b{display:block!important;margin-top:2px!important;font-size:.72rem!important;color:#e0f2fe!important;font-weight:950!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important}
+.nt-signal-numbers small{display:block!important;margin-top:5px!important;color:#bbf7d0!important;font-size:.58rem!important;font-weight:800!important}
+@media(max-width:900px){.nt-number-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}}
+</style>
 
 </body>
 </html>
