@@ -323,6 +323,40 @@ body.portal-open .brand-footer{ display:none; }
 #testerPatternPanel .pattern-signal{font-size:1.35rem;font-weight:900;color:#22c55e;margin-top:4px}
 #testerPatternPanel .pattern-note{color:#94a3b8;font-size:.75rem;line-height:1.45;margin-top:8px}
 
+
+/* FINAL PATCH: Signal A/B numeric result dropdown only */
+.nt-signal-results-dropdown{
+  display:none;
+  margin:10px 0 8px;
+  padding:10px;
+  border:1px solid rgba(56,189,248,.38);
+  border-radius:14px;
+  background:linear-gradient(180deg, rgba(2,17,31,.96), rgba(15,23,42,.92));
+  box-shadow:0 12px 35px rgba(0,0,0,.25);
+}
+.nt-signal-results-dropdown.show{display:block}
+.nt-signal-results-title{
+  display:flex;justify-content:space-between;align-items:center;gap:8px;
+  color:#38bdf8;font-weight:900;font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;margin-bottom:8px
+}
+.nt-signal-results-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.nt-signal-result-card{
+  border:1px solid rgba(56,189,248,.28);
+  border-radius:12px;
+  background:rgba(15,23,42,.86);
+  padding:10px;
+}
+.nt-signal-result-card h4{margin:0 0 6px;color:#e0f2fe;font-size:.78rem;display:flex;justify-content:space-between;gap:8px}
+.nt-signal-result-card h4 b{color:#22c55e}
+.nt-signal-result-card.sell h4 b{color:#ef4444}
+.nt-signal-matrix{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}
+.nt-signal-matrix div{border:1px solid rgba(148,163,184,.18);border-radius:10px;padding:7px;background:rgba(2,6,23,.45)}
+.nt-signal-matrix span{display:block;color:#94a3b8;font-size:.58rem;font-weight:800;text-transform:uppercase;letter-spacing:.06em}
+.nt-signal-matrix strong{display:block;color:#fff;font-size:.83rem;margin-top:2px}
+.nt-signal-result-card small{display:block;margin-top:7px;color:#94a3b8;font-weight:700;line-height:1.35}
+.nt-locked-tp{color:#fbbf24!important}
+@media(max-width:900px){.nt-signal-results-grid{grid-template-columns:1fr}.nt-signal-matrix{grid-template-columns:1fr 1fr}}
+
 </style>
 <link href="manifest.webmanifest" rel="manifest"/>
 <meta content="#38bdf8" name="theme-color"/>
@@ -5469,6 +5503,186 @@ body{
 .nt-signal-numbers small{display:block!important;margin-top:5px!important;color:#bbf7d0!important;font-size:.58rem!important;font-weight:800!important}
 @media(max-width:900px){.nt-number-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}}
 </style>
+
+
+<script id="nt-final-signal-dropdown-numbers-patch">
+(function(){
+  const $ = id => document.getElementById(id);
+  const OWNER_EMAILS = ['engobeni842@gmail.com','emusiyiwa844@gmail.com','emmanuelngobeni@gmail.com'];
+  function email(){
+    return (localStorage.getItem('nt_current_email') || localStorage.getItem('nt_last_signup_email') || ($('userEmail')?.textContent) || document.body.innerText.match(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/i)?.[0] || 'guest').trim().toLowerCase();
+  }
+  function getPlanName(){
+    const txt = ((document.body.innerText||'')+' '+(localStorage.getItem('nt_plan')||'')+' '+(localStorage.getItem('nettrack_plan')||'')).toUpperCase();
+    if(OWNER_EMAILS.includes(email())) return 'OWNER';
+    if(txt.includes('ELITE')) return 'ELITE';
+    if(txt.includes('PREMIUM')) return 'PREMIUM';
+    if(txt.includes('PRO PLAN') || txt.includes(' PRO ') || txt.includes('PLAN PRO')) return 'PRO';
+    if(txt.includes('BASIC')) return 'BASIC';
+    return 'FREE TESTER';
+  }
+  function planInfo(){
+    const p=getPlanName();
+    if(p==='OWNER') return {plan:p,maxSignals:8,tpLevels:3,label:'OWNER ACCESS • 8 signals/day • TP1 + TP2 + TP3'};
+    if(p==='ELITE'||p==='PREMIUM') return {plan:p,maxSignals:8,tpLevels:3,label:'PREMIUM • 8 signals/day • TP1 + TP2 + TP3'};
+    if(p==='PRO') return {plan:p,maxSignals:4,tpLevels:2,label:'PRO • 4 signals/day • TP1 + TP2'};
+    if(p==='BASIC') return {plan:p,maxSignals:2,tpLevels:1,label:'BASIC • 2 signals/day • TP1'};
+    return {plan:p,maxSignals:2,tpLevels:1,label:'FREE TESTER • 2 signals/day • TP1 only'};
+  }
+  function qKey(){ return 'nt_signal_AB_final_dropdown_'+email()+'_'+new Date().toISOString().slice(0,10); }
+  function read(){ try{return JSON.parse(localStorage.getItem(qKey())||'[]')}catch(e){return[]} }
+  function save(a){ localStorage.setItem(qKey(), JSON.stringify(a.slice(0, planInfo().maxSignals))); }
+  function toast(msg,sub){
+    if(typeof window.toast==='function') return window.toast(msg,sub);
+    try{ const d=document.createElement('div'); d.className='nt-toast'; d.innerHTML=String(msg)+(sub?'<small>'+String(sub)+'</small>':''); document.body.appendChild(d); setTimeout(()=>d.remove(),3500); }catch(e){ alert(msg+(sub?'\n'+sub:'')); }
+  }
+  function priceValue(){
+    const live = ($('livePrice')?.textContent || '').replace(/[^0-9.]/g,'');
+    const p = parseFloat(live);
+    if(isFinite(p) && p>0) return p;
+    try{
+      const c = window.candles || window.CANDLES || [];
+      const last = c[c.length-1];
+      const v = Number(last?.close || last?.c || last?.price);
+      if(isFinite(v) && v>0) return v;
+    }catch(e){}
+    const sym=($('assetSelect')?.value||'BTCUSDT').toUpperCase();
+    if(sym.includes('BTC')) return 60162.02;
+    if(sym.includes('ETH')) return 1580.12;
+    if(sym.includes('BNB')) return 565.15;
+    if(sym.includes('SOL')) return 132.40;
+    if(sym.includes('JPY')) return 157.82;
+    return 1.08650;
+  }
+  function fmt(sym,n){
+    if(!isFinite(n)) return '--';
+    sym=String(sym||'').toUpperCase();
+    if(sym.includes('BTC')||sym.includes('ETH')||sym.includes('BNB')||sym.includes('SOL')||sym.includes('USDT')) return Number(n).toFixed(n>=100?2:4);
+    if(sym.includes('JPY')) return Number(n).toFixed(3);
+    return Number(n).toFixed(5);
+  }
+  function side(){
+    const t=($('signalText')?.textContent||'').toUpperCase();
+    if(t.includes('BUY')) return 'BUY';
+    if(t.includes('SELL')) return 'SELL';
+    const bias=($('marketBias')?.textContent||'').toUpperCase();
+    if(bias.includes('BULL')) return 'BUY';
+    if(bias.includes('BEAR')) return 'SELL';
+    return 'BUY';
+  }
+  function confidence(slot){
+    const c=parseInt(($('confValue')?.textContent||'').replace(/\D/g,''),10);
+    let base=(isFinite(c)&&c>0)?c:64;
+    if(slot==='B') base=Math.max(52, Math.min(94, base-4));
+    return Math.max(50, Math.min(94, base));
+  }
+  function makeSignal(slot){
+    const sym=($('assetSelect')?.value||'BTCUSDT').toUpperCase();
+    const tf=$('tfSelect')?.value||'1m';
+    const broker=$('brokerSelect')?.value||'Binance';
+    const s=side();
+    const p=priceValue();
+    const isCrypto = sym.includes('USDT')||['BTCUSDT','ETHUSDT','BNBUSDT','SOLUSDT'].includes(sym);
+    const risk = p * (isCrypto ? 0.0035 : (sym.includes('JPY') ? 0.0020 : 0.0012));
+    const dir = s==='SELL' ? -1 : 1;
+    const entryRaw = p + (slot==='B' ? risk*0.18*dir : 0);
+    const slRaw = entryRaw - (risk*dir);
+    const tp1Raw = entryRaw + (risk*1.8*dir);
+    const tp2Raw = entryRaw + (risk*2.8*dir);
+    const tp3Raw = entryRaw + (risk*4.0*dir);
+    return {
+      slot, side:s, sym, tf, broker,
+      entry:fmt(sym,entryRaw), sl:fmt(sym,slRaw), tp1:fmt(sym,tp1Raw), tp2:fmt(sym,tp2Raw), tp3:fmt(sym,tp3Raw),
+      conf:confidence(slot), rr:'1:1.8', time:new Date().toLocaleTimeString()
+    };
+  }
+  function detailHTML(sig){
+    const info=planInfo();
+    const tp2=info.tpLevels>=2 ? sig.tp2 : '<span class="nt-locked-tp">🔒 Pro</span>';
+    const tp3=info.tpLevels>=3 ? sig.tp3 : '<span class="nt-locked-tp">🔒 Premium</span>';
+    return '<div class="nt-signal-numbers">'+
+      '<div class="nt-signal-market"><b>'+sig.sym+'</b><span>'+sig.tf+' • '+sig.broker+'</span></div>'+
+      '<div class="nt-number-grid">'+
+      '<div><span>ENTRY</span><b>'+sig.entry+'</b></div>'+
+      '<div><span>STOP LOSS</span><b>'+sig.sl+'</b></div>'+
+      '<div><span>TAKE PROFIT 1</span><b>'+sig.tp1+'</b></div>'+
+      '<div><span>TAKE PROFIT 2</span><b>'+tp2+'</b></div>'+
+      '<div><span>TAKE PROFIT 3</span><b>'+tp3+'</b></div>'+
+      '<div><span>WIN CHANCE</span><b>'+sig.conf+'%</b></div>'+
+      '</div><small>Risk/Reward '+sig.rr+' • '+info.label+'</small></div>';
+  }
+  function dropdownHTML(arr){
+    const info=planInfo();
+    if(!arr.length) return '';
+    return '<div class="nt-signal-results-title"><span>Generated Signal Results</span><span>'+arr.length+'/'+info.maxSignals+' used today</span></div>'+
+      '<div class="nt-signal-results-grid">'+arr.slice(0,2).map(sig=>{
+        const tp2=info.tpLevels>=2 ? sig.tp2 : '🔒 Pro';
+        const tp3=info.tpLevels>=3 ? sig.tp3 : '🔒 Premium';
+        return '<div class="nt-signal-result-card '+(sig.side==='SELL'?'sell':'buy')+'">'+
+          '<h4><span>SIGNAL '+sig.slot+'</span><b>'+sig.side+'</b></h4>'+
+          '<div class="nt-signal-matrix">'+
+          '<div><span>Entry</span><strong>'+sig.entry+'</strong></div>'+
+          '<div><span>Stop Loss</span><strong>'+sig.sl+'</strong></div>'+
+          '<div><span>Take Profit 1</span><strong>'+sig.tp1+'</strong></div>'+
+          '<div><span>Win Chance</span><strong>'+sig.conf+'%</strong></div>'+
+          '<div><span>Take Profit 2</span><strong class="'+(info.tpLevels>=2?'':'nt-locked-tp')+'">'+tp2+'</strong></div>'+
+          '<div><span>Take Profit 3</span><strong class="'+(info.tpLevels>=3?'':'nt-locked-tp')+'">'+tp3+'</strong></div>'+
+          '</div><small>'+sig.sym+' • '+sig.tf+' • '+sig.broker+' • Risk/Reward '+sig.rr+'</small>'+
+          '</div>';
+      }).join('')+'</div>';
+  }
+  function ensureDropdown(){
+    const row=$('ntGenerateSignalBtn')?.closest('.nt-signal-row');
+    if(!row) return null;
+    let box=$('ntSignalResultsDropdown');
+    if(!box){
+      box=document.createElement('div');
+      box.id='ntSignalResultsDropdown';
+      box.className='nt-signal-results-dropdown';
+      row.insertAdjacentElement('afterend', box);
+    }
+    return box;
+  }
+  function render(){
+    const arr=read(), a=arr[0], b=arr[1], info=planInfo();
+    if($('signalAName')) $('signalAName').textContent=a?('SIGNAL A: '+a.side):'PRESS GENERATE';
+    if($('signalADetail')) $('signalADetail').innerHTML=a?detailHTML(a):'Press Generate Signal A + B to open the numeric result dropdown.';
+    if($('signalBName')) $('signalBName').textContent=b?('SIGNAL B: '+b.side):(a?'SIGNAL B READY':'WAITING');
+    if($('signalBDetail')) $('signalBDetail').innerHTML=b?detailHTML(b):'Signal B appears from the same button. Daily limits are controlled by subscription.';
+    if($('ntSignalCount')) $('ntSignalCount').textContent=arr.length+'/'+info.maxSignals+' used today • '+info.label;
+    const box=ensureDropdown();
+    if(box){
+      if(arr.length){ box.innerHTML=dropdownHTML(arr); box.classList.add('show'); }
+      else { box.innerHTML=''; box.classList.remove('show'); }
+    }
+  }
+  function generate(){
+    const info=planInfo();
+    let arr=read();
+    if(arr.length>=info.maxSignals){ toast('Daily signal limit reached', info.label+' — subscribe/upgrade to unlock more signals and TP levels.'); render(); return; }
+    const needed=Math.min(2, info.maxSignals-arr.length);
+    for(let i=0;i<needed;i++){
+      arr.push(makeSignal(String.fromCharCode(65+arr.length)));
+    }
+    save(arr);
+    render();
+    toast('Signal A + B generated','Entry, Stop Loss, Take Profit and Win Chance are now shown.');
+  }
+  function bind(){
+    const btn=$('ntGenerateSignalBtn');
+    if(btn && !btn.dataset.finalNumbersBound){
+      btn.dataset.finalNumbersBound='1';
+      btn.onclick=generate;
+      btn.textContent='GENERATE SIGNAL A + B';
+      ensureDropdown();
+      render();
+    }
+  }
+  document.addEventListener('DOMContentLoaded', bind);
+  setInterval(bind, 700);
+  window.ntFinalRenderSignalNumbers=render;
+})();
+</script>
 
 </body>
 </html>
