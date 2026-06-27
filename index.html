@@ -2385,6 +2385,33 @@ function connectWS() {
     };
   } catch(e) {}
 })();
+
+// Recovery flow enhancement
+(async()=>{
+ if(window.supabaseClient){
+  const {data}=await window.supabaseClient.auth.getSession();
+  const hash=location.hash||'';
+  if(hash.includes('type=recovery')){
+    const auth=document.getElementById('authCard')||document.body;
+    const div=document.createElement('div');
+    div.innerHTML=`<div style="padding:16px;border:1px solid #555;margin:12px;background:#111;color:#fff">
+    <h3>Create New Password</h3>
+    <input id="np1" type="password" placeholder="New password"><br><br>
+    <input id="np2" type="password" placeholder="Confirm password"><br><br>
+    <button id="upd">Update Password</button>
+    <div id="msg"></div></div>`;
+    auth.prepend(div);
+    document.getElementById('upd').onclick=async()=>{
+      const a=np1.value,b=np2.value;
+      if(a!==b){msg.textContent='Passwords do not match';return;}
+      const {error}=await window.supabaseClient.auth.updateUser({password:a});
+      msg.textContent=error?error.message:'Password updated. Please log in.';
+      if(!error){setTimeout(()=>window.location.href=location.origin+location.pathname,1500);}
+    };
+  }
+ }
+})();
+
 </script>
 <div id="authOverlay" style="position:fixed;inset:0;background:#020617;z-index:999999;display:flex;align-items:center;justify-content:center">
 <div style="background:#0f172a;padding:24px;border-radius:12px;width:340px;color:white">
