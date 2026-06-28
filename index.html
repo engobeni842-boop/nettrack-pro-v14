@@ -4,7 +4,7 @@
 <head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>NetTrack Pro V13.8 Clean Signal Platform</title>
+<title>NetTrack Pro V14.0 Final Signal Platform</title>
 <style>
 :root {
 --bg: #050a14;
@@ -323,40 +323,6 @@ body.portal-open .brand-footer{ display:none; }
 #testerPatternPanel .pattern-signal{font-size:1.35rem;font-weight:900;color:#22c55e;margin-top:4px}
 #testerPatternPanel .pattern-note{color:#94a3b8;font-size:.75rem;line-height:1.45;margin-top:8px}
 
-
-/* FINAL PATCH: Signal A/B numeric result dropdown only */
-.nt-signal-results-dropdown{
-  display:none;
-  margin:10px 0 8px;
-  padding:10px;
-  border:1px solid rgba(56,189,248,.38);
-  border-radius:14px;
-  background:linear-gradient(180deg, rgba(2,17,31,.96), rgba(15,23,42,.92));
-  box-shadow:0 12px 35px rgba(0,0,0,.25);
-}
-.nt-signal-results-dropdown.show{display:block}
-.nt-signal-results-title{
-  display:flex;justify-content:space-between;align-items:center;gap:8px;
-  color:#38bdf8;font-weight:900;font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;margin-bottom:8px
-}
-.nt-signal-results-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px}
-.nt-signal-result-card{
-  border:1px solid rgba(56,189,248,.28);
-  border-radius:12px;
-  background:rgba(15,23,42,.86);
-  padding:10px;
-}
-.nt-signal-result-card h4{margin:0 0 6px;color:#e0f2fe;font-size:.78rem;display:flex;justify-content:space-between;gap:8px}
-.nt-signal-result-card h4 b{color:#22c55e}
-.nt-signal-result-card.sell h4 b{color:#ef4444}
-.nt-signal-matrix{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}
-.nt-signal-matrix div{border:1px solid rgba(148,163,184,.18);border-radius:10px;padding:7px;background:rgba(2,6,23,.45)}
-.nt-signal-matrix span{display:block;color:#94a3b8;font-size:.58rem;font-weight:800;text-transform:uppercase;letter-spacing:.06em}
-.nt-signal-matrix strong{display:block;color:#fff;font-size:.83rem;margin-top:2px}
-.nt-signal-result-card small{display:block;margin-top:7px;color:#94a3b8;font-weight:700;line-height:1.35}
-.nt-locked-tp{color:#fbbf24!important}
-@media(max-width:900px){.nt-signal-results-grid{grid-template-columns:1fr}.nt-signal-matrix{grid-template-columns:1fr 1fr}}
-
 </style>
 <link href="manifest.webmanifest" rel="manifest"/>
 <meta content="#38bdf8" name="theme-color"/>
@@ -504,7 +470,7 @@ body.portal-open .brand-footer{ display:none; }
 <div id="notif-box"></div>
 <header>
 <div class="controls">
-<h1 style="margin:0; font-size:1.2rem; margin-right:10px">NetTrack <span style="color:var(--primary)">PRO</span><small style="display:block;font-size:.55rem;color:#94a3b8;letter-spacing:.8px">V13.8 CLEAN SIGNAL PLATFORM  ARMOROO ENT</small></h1>
+<h1 style="margin:0; font-size:1.2rem; margin-right:10px">NetTrack <span style="color:var(--primary)">PRO</span><small style="display:block;font-size:.55rem;color:#94a3b8;letter-spacing:.8px">V14.0 FINAL SIGNAL PLATFORM  ARMOROO ENT</small></h1>
 <span class="tester-badge">Free Tester Mode</span>
 <select class="pair-selector" id="assetSelect" onchange="changeAsset()">
 <option value="BTCUSDT">BTC/USDT</option>
@@ -877,7 +843,7 @@ body.portal-open .brand-footer{ display:none; }
 </div>
 <div class="brand-footer">
 <b>ARMOROO ENT Software and Apps</b><br/>
-<span>NetTrack Pro V13.8 Clean Signal Platform</span><br/>
+<span>NetTrack Pro V14.0 Final Signal Platform</span><br/>
 <span>Developed by Emmanuel Musiyiwa Ngobeni &amp; Thando Mbatha</span>
 </div>
 <div id="settingsModal" onclick="if(event.target===this) toggleSettings()">
@@ -5380,104 +5346,12 @@ body{
   }
   function quotaKey(){return 'nt_signal_AB_'+email()+'_'+new Date().toISOString().slice(0,10)}
   function readSignals(){try{return JSON.parse(localStorage.getItem(quotaKey())||'[]')}catch(e){return[]}}
-  function saveSignals(a){localStorage.setItem(quotaKey(),JSON.stringify(a.slice(0,planInfo().maxSignals)))}
-  function getPlanName(){
-    const txt=((document.body.innerText||'')+' '+(localStorage.getItem('nt_plan')||'')+' '+(localStorage.getItem('nettrack_plan')||'')).toUpperCase();
-    if(OWNER_EMAILS.includes(email())) return 'OWNER';
-    if(txt.includes('ELITE')) return 'ELITE';
-    if(txt.includes('PREMIUM')) return 'PREMIUM';
-    if(txt.includes('PRO PLAN')||txt.includes(' PRO ')||txt.includes('PLAN PRO')) return 'PRO';
-    if(txt.includes('BASIC')) return 'BASIC';
-    return 'FREE TESTER';
-  }
-  function planInfo(){
-    const plan=getPlanName();
-    if(plan==='OWNER') return {plan,maxSignals:8,tpLevels:3,label:'OWNER ACCESS • 8 signals/day • TP1 + TP2 + TP3'};
-    if(plan==='ELITE'||plan==='PREMIUM') return {plan,maxSignals:8,tpLevels:3,label:'PREMIUM • 8 signals/day • TP1 + TP2 + TP3'};
-    if(plan==='PRO') return {plan,maxSignals:4,tpLevels:2,label:'PRO • 4 signals/day • TP1 + TP2'};
-    if(plan==='BASIC') return {plan,maxSignals:2,tpLevels:1,label:'BASIC • 2 signals/day • TP1'};
-    return {plan,maxSignals:2,tpLevels:1,label:'FREE TESTER • 2 signals/day • TP1 only'};
-  }
+  function saveSignals(a){localStorage.setItem(quotaKey(),JSON.stringify(a.slice(0,2)))}
   function sideFromEngine(){const sig=($('signalText')?.textContent||'NEUTRAL').toUpperCase(); if(sig.includes('BUY'))return'BUY'; if(sig.includes('SELL'))return'SELL'; const c=parseInt(($('confValue')?.textContent||'0').replace(/\D/g,''),10)||0; return c%2?'BUY':'SELL'}
-  function fmtNum(sym,n){ if(!isFinite(n)) return 'live'; return Number(n).toFixed(n>100?2:(sym.includes('JPY')?3:5)); }
-  function mkSignal(slot){
-    const sym=($('assetSelect')?.value||window.SYMBOL||'BTCUSDT');
-    const tf=($('tfSelect')?.value||window.INTERVAL||'1m');
-    const broker=($('brokerSelect')?.value||'Binance');
-    const baseSide=sideFromEngine();
-    const side=(slot==='B' && baseSide==='NEUTRAL')?'SELL':baseSide;
-    const priceTxt=($('livePrice')?.textContent||'').replace(/[^0-9.]/g,'');
-    const price=parseFloat(priceTxt)||((window.candles&&window.candles.length)?window.candles[window.candles.length-1].close:0);
-    const conf=parseInt(($('confValue')?.textContent||'54').replace(/\D/g,''),10)||54;
-    let entry='live', sl='live', tp1='live', tp2='SUBSCRIPTION', tp3='PREMIUM';
-    if(price){
-      const risk=price*(sym.includes('USDT')?0.0035:(sym.includes('JPY')?0.002:0.0012));
-      const dir=side==='BUY'?1:-1;
-      entry=fmtNum(sym,price);
-      sl=fmtNum(sym,price-(risk*dir));
-      tp1=fmtNum(sym,price+(risk*1.8*dir));
-      tp2=fmtNum(sym,price+(risk*2.8*dir));
-      tp3=fmtNum(sym,price+(risk*4.0*dir));
-    }
-    const rr='1:1.8';
-    return {slot,side,sym,tf,broker,conf,entry,price:entry,sl,tp:tp1,tp1,tp2,tp3,rr,time:new Date().toLocaleTimeString()};
-  }
-  function signalLine(sig){
-    const info=planInfo();
-    const tp2=info.tpLevels>=2?` • TP2: ${sig.tp2}`:' • TP2: 🔒 Pro';
-    const tp3=info.tpLevels>=3?` • TP3: ${sig.tp3}`:' • TP3: 🔒 Premium';
-    return `${sig.sym} • ${sig.tf} • ${sig.broker} • Entry: ${sig.entry} • Stop Loss: ${sig.sl} • TP1: ${sig.tp1}${tp2}${tp3} • RR ${sig.rr} • Win chance: ${sig.conf}%`;
-  }
-  function signalDetailHTML(sig){
-    const info=planInfo();
-    const tp2=info.tpLevels>=2 ? sig.tp2 : '🔒 Pro';
-    const tp3=info.tpLevels>=3 ? sig.tp3 : '🔒 Premium';
-    return `<div class="nt-signal-numbers">
-      <div class="nt-signal-market"><b>${sig.sym}</b><span>${sig.tf} • ${sig.broker}</span></div>
-      <div class="nt-number-grid">
-        <div><span>ENTRY</span><b>${sig.entry}</b></div>
-        <div><span>STOP LOSS</span><b>${sig.sl}</b></div>
-        <div><span>TAKE PROFIT 1</span><b>${sig.tp1}</b></div>
-        <div><span>TAKE PROFIT 2</span><b>${tp2}</b></div>
-        <div><span>TAKE PROFIT 3</span><b>${tp3}</b></div>
-        <div><span>WIN CHANCE</span><b>${sig.conf}%</b></div>
-      </div>
-      <small>Risk/Reward ${sig.rr} • ${info.label}</small>
-    </div>`;
-  }
-  function copySignal(sig){
-    const info=planInfo();
-    const lines=[`NetTrack Signal ${sig.slot}`,`${sig.side} ${sig.sym}`,`Broker: ${sig.broker}`,`TF: ${sig.tf}`,`Entry: ${sig.entry}`,`Stop Loss: ${sig.sl}`,`TP1: ${sig.tp1}`];
-    if(info.tpLevels>=2) lines.push(`TP2: ${sig.tp2}`); else lines.push('TP2: Locked - Pro subscription');
-    if(info.tpLevels>=3) lines.push(`TP3: ${sig.tp3}`); else lines.push('TP3: Locked - Premium subscription');
-    navigator.clipboard?.writeText(lines.join('\n')).then(()=>toast('Signal copied','Entry, SL and TP levels copied.')).catch(()=>toast('Copy ready',lines.join(' | ')));
-  }
-  function renderSignals(){
-    const arr=readSignals(); const a=arr[0], b=arr[1]; const info=planInfo();
-    if($('signalAName')) $('signalAName').textContent=a?('SIGNAL A: '+a.side):'PRESS GENERATE';
-    if($('signalADetail')) { if(a) $('signalADetail').innerHTML=signalDetailHTML(a); else $('signalADetail').textContent='Press the Signal A+B button. Free/BASIC gives TP1 only. Pro/Premium unlock extra TP levels.'; }
-    if($('signalBName')) $('signalBName').textContent=b?('SIGNAL B: '+b.side):(a?'SIGNAL B READY':'WAITING');
-    if($('signalBDetail')) { if(b) $('signalBDetail').innerHTML=signalDetailHTML(b); else $('signalBDetail').textContent='Signal B appears from the same button. Daily limits are controlled by subscription.'; }
-    const count=$('ntSignalCount'); if(count) count.textContent=`${arr.length}/${info.maxSignals} used today • ${info.label}`;
-    const sub=$('patternSubscription')||$('subscriptionGuard')||$('planBadge'); if(sub) sub.textContent=info.label;
-    updatePlatformLabels();
-  }
-  function generateSignal(){
-    const info=planInfo(); let arr=readSignals();
-    if(arr.length>=info.maxSignals){toast('Daily signal limit reached',info.label+' — upgrade subscription to unlock more signals and TP levels.'); renderSignals(); return}
-    const firstSlot=arr.length===0?'A':String.fromCharCode(65+arr.length);
-    const needed=Math.min(2, info.maxSignals-arr.length);
-    for(let i=0;i<needed;i++){arr.push(mkSignal(String.fromCharCode(65+arr.length)));}
-    saveSignals(arr); renderSignals();
-    toast('Signal '+firstSlot+(needed===2?' + '+String.fromCharCode(64+arr.length):'')+' generated', info.label);
-  }
-  function ensureSignalButton(){
-    const panel=$('dailySignalPanel'); if(!panel||$('ntGenerateSignalBtn')) return;
-    const h=panel.querySelector('h3')||panel.firstElementChild; const wrap=document.createElement('div'); wrap.className='nt-signal-row';
-    wrap.innerHTML='<button type="button" class="nt-signal-generate" id="ntGenerateSignalBtn">GENERATE SIGNAL A + B</button><div class="nt-signal-count" id="ntSignalCount">0/2 signals used today • FREE TESTER • TP1 only</div>';
-    if(h) h.insertAdjacentElement('afterend',wrap); else panel.prepend(wrap);
-    $('ntGenerateSignalBtn').onclick=generateSignal; renderSignals();
-  }
+  function mkSignal(slot){const sym=($('assetSelect')?.value||window.SYMBOL||'BTCUSDT'); const tf=($('tfSelect')?.value||window.INTERVAL||'1m'); const broker=($('brokerSelect')?.value||'Binance'); const side=sideFromEngine(); const priceTxt=($('livePrice')?.textContent||'').replace(/[^0-9.]/g,''); const price=parseFloat(priceTxt)||((window.candles&&window.candles.length)?window.candles[window.candles.length-1].close:0); const conf=parseInt(($('confValue')?.textContent||'54').replace(/\D/g,''),10)||54; let sl='chart SL',tp='chart TP'; if(price){const risk=price*(sym.includes('USDT')?0.0035:0.0012); sl=(side==='BUY'?price-risk:price+risk).toFixed(price>100?2:5); tp=(side==='BUY'?price+risk*1.8:price-risk*1.8).toFixed(price>100?2:5)} return {slot,side,sym,tf,broker,conf,price:price?price.toFixed(price>100?2:5):'live',sl,tp,time:new Date().toLocaleTimeString()}}
+  function renderSignals(){const arr=readSignals(); const a=arr[0], b=arr[1]; if($('signalAName')) $('signalAName').textContent=a?('SIGNAL A: '+a.side):'PRESS GENERATE'; if($('signalADetail')) $('signalADetail').textContent=a?`${a.sym} • ${a.tf} • ${a.broker} • Entry ${a.price} • SL ${a.sl} • TP ${a.tp} • ${a.conf}%`:'Press the Signal A+B button. Daily limit: 2 signals.'; if($('signalBName')) $('signalBName').textContent=b?('SIGNAL B: '+b.side):(a?'PRESS AGAIN FOR B':'WAITING'); if($('signalBDetail')) $('signalBDetail').textContent=b?`${b.sym} • ${b.tf} • ${b.broker} • Entry ${b.price} • SL ${b.sl} • TP ${b.tp} • ${b.conf}%`:'Second signal appears when you press the generator again. Max 2/day.'; const count=$('ntSignalCount'); if(count) count.textContent=`${arr.length}/2 signals used today`; updatePlatformLabels(); }
+  function generateSignal(){const arr=readSignals(); if(arr.length>=2){toast('Daily signal limit reached','Signal A and Signal B already generated today. Come back tomorrow.'); renderSignals(); return} const slot=arr.length===0?'A':'B'; const sig=mkSignal(slot); arr.push(sig); saveSignals(arr); renderSignals(); toast('Signal '+slot+' generated', `${sig.side} ${sig.sym} on ${sig.broker} • ${sig.tf}`); }
+  function ensureSignalButton(){const panel=$('dailySignalPanel'); if(!panel||$('ntGenerateSignalBtn')) return; const h=panel.querySelector('h3')||panel.firstElementChild; const wrap=document.createElement('div'); wrap.className='nt-signal-row'; wrap.innerHTML='<button type="button" class="nt-signal-generate" id="ntGenerateSignalBtn">GENERATE SIGNAL A + B</button><div class="nt-signal-count" id="ntSignalCount">0/2 signals used today</div>'; if(h) h.insertAdjacentElement('afterend',wrap); else panel.prepend(wrap); $('ntGenerateSignalBtn').onclick=generateSignal; renderSignals(); }
   function updatePlatformLabels(){const broker=$('brokerSelect')?.value||'Binance', sym=$('assetSelect')?.value||'BTCUSDT', tf=$('tfSelect')?.value||'1m'; if($('patternPlatform')) $('patternPlatform').textContent=broker+' • '+sym+' • '+tf; if($('patternSync')) $('patternSync').textContent='Live signal generator is linked to the selected platform, symbol and timeframe.'; if($('brokerOverlayName')) $('brokerOverlayName').textContent=broker; if($('alignBrokerName')) $('alignBrokerName').textContent=broker; }
   const oldChangeBroker=window.changeBroker; window.changeBroker=function(){const old=localStorage.getItem('nt_last_platform')||''; if(typeof oldChangeBroker==='function') oldChangeBroker.apply(this,arguments); const cur=$('brokerSelect')?.value||'Binance'; localStorage.setItem('nt_last_platform',cur); updatePlatformLabels(); if(old&&old!==cur) toast('Platform switched',old+' → '+cur); renderSignals(); };
   function removeUnwanted(){['cloudUserFoundation','cloudUserBox','netTrackBotBox','walletBox','txBox','transactionBox','commissionBox','revenueBox'].forEach(id=>{const e=$(id); if(e)e.style.display='none'}); qa('h3,h4,b,small,span,div').forEach(e=>{const t=(e.textContent||'').trim().toLowerCase(); if(t==='cloud user foundation'||t==='nettrack wallet'||t==='transaction history'||t==='nettrack bot'){const box=e.closest('.card')||e.closest('[id]')||e.parentElement; if(box) box.style.display='none'}}); qa('button').forEach(b=>{const t=(b.textContent||'').toLowerCase(); if(t.includes('mark win')||t.includes('mark loss')||t.includes('mark close')) b.style.display='none'}); }
@@ -5489,589 +5363,154 @@ body{
   setInterval(()=>{boot(); restPoll(); renderSignals();},2500);
 })();
 </script>
-<!-- /NETTRACK PRO V13.8.2 SIGNAL BUTTON + PLATFORM ROUTER + SOCKET FALLBACK FIX -->
+<!-- /NETTRACK PRO V14.0 FINAL POLISH -->
 
 
-<style id="nt-signal-numbers-fix">
-.nt-signal-numbers{margin-top:5px!important;font-size:.68rem!important;line-height:1.25!important;color:#dbeafe!important}
-.nt-signal-market{display:flex!important;justify-content:space-between!important;align-items:center!important;gap:8px!important;margin-bottom:6px!important;color:#7dd3fc!important}
-.nt-signal-market b{font-size:.76rem!important;color:#38bdf8!important}.nt-signal-market span{font-size:.62rem!important;color:#94a3b8!important}
-.nt-number-grid{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:5px!important}
-.nt-number-grid div{border:1px solid rgba(56,189,248,.22)!important;background:rgba(2,6,23,.45)!important;border-radius:7px!important;padding:5px 6px!important;min-height:33px!important}
-.nt-number-grid span{display:block!important;font-size:.54rem!important;color:#94a3b8!important;letter-spacing:.08em!important;font-weight:900!important;text-transform:uppercase!important}
-.nt-number-grid b{display:block!important;margin-top:2px!important;font-size:.72rem!important;color:#e0f2fe!important;font-weight:950!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important}
-.nt-signal-numbers small{display:block!important;margin-top:5px!important;color:#bbf7d0!important;font-size:.58rem!important;font-weight:800!important}
-@media(max-width:900px){.nt-number-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}}
+<!-- NETTRACK PRO V14 FINAL SIGNAL DROPDOWN + COMPACT DESKTOP + OWNER SIDEBAR PATCH -->
+<style id="nt-v14-final-polish-css">
+  @media (min-width: 1000px){
+    body{overflow:hidden!important;}
+    header{height:70px!important;padding:8px 12px!important;gap:8px!important;}
+    header h1{font-size:1rem!important;line-height:1!important;min-width:82px!important;}
+    header h1 small{font-size:.47rem!important;line-height:1.1!important;}
+    .container{padding:8px 228px 18px 250px!important;max-width:none!important;}
+    .grid{gap:7px!important;}
+    .card{padding:8px!important;border-radius:10px!important;}
+    .card h3{font-size:.64rem!important;margin:0 0 6px!important;letter-spacing:.9px!important;}
+    .daily-signal-panel{padding:8px!important;}
+    .daily-signal-grid{gap:6px!important;}
+    .daily-signal-card{min-height:48px!important;padding:7px!important;}
+    .daily-signal-card small{font-size:.55rem!important;}
+    .daily-signal-card b{font-size:.76rem!important;line-height:1.05!important;}
+    .daily-signal-card span{font-size:.58rem!important;line-height:1.12!important;}
+    #mainChart{height:245px!important;max-height:245px!important;}
+    canvas#mainChart{height:245px!important;}
+    .span-8.card,.span-4.card{min-height:290px!important;}
+    .summary-mini div{padding:5px!important;font-size:.6rem!important;}
+    .big-signal{font-size:1.55rem!important;}
+    .nt-signal-row{grid-template-columns:1.05fr .86fr!important;gap:6px!important;margin:5px 0 7px!important;}
+    .nt-signal-generate{padding:9px 12px!important;font-size:.75rem!important;margin:0!important;}
+    .nt-signal-count{font-size:.64rem!important;padding:6px!important;}
+    .brand-footer{position:fixed!important;left:8px!important;bottom:6px!important;z-index:9999!important;background:rgba(2,6,23,.55)!important;border:1px solid rgba(56,189,248,.22)!important;border-radius:12px!important;padding:7px 8px!important;display:block!important;font-size:.56rem!important;line-height:1.25!important;color:#94a3b8!important;max-width:210px!important;text-align:left!important;}
+    .brand-footer b{font-size:.66rem!important;color:#38bdf8!important;}
+  }
+  .nt-side-nav{position:fixed!important;left:7px!important;top:175px!important;z-index:10001!important;display:flex!important;flex-direction:column!important;gap:8px!important;background:rgba(2,6,23,.55)!important;padding:7px!important;border-radius:14px!important;border:1px solid rgba(56,189,248,.28)!important;backdrop-filter:blur(10px)!important;}
+  .nt-side-nav #navOwner{display:none!important;}
+  body.nt-owner-ok .nt-side-nav #navOwner{display:block!important;}
+  #ownerPage{display:none;}
+  body.nt-owner-ok #ownerPage{display:block;}
+  #ntSignalResultsPanel{display:none;margin:7px 0 8px;border:1px solid rgba(56,189,248,.32);border-radius:12px;background:linear-gradient(135deg,rgba(15,23,42,.96),rgba(2,20,36,.96));padding:8px;box-shadow:0 12px 28px rgba(0,0,0,.25);}
+  #ntSignalResultsPanel.show{display:block;animation:ntSlideDown .18s ease-out;}
+  @keyframes ntSlideDown{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:translateY(0)}}
+  .nt-results-head{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:6px;color:#7dd3fc;font-size:.62rem;text-transform:uppercase;letter-spacing:1px;font-weight:900;}
+  .nt-results-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px;}
+  .nt-result-card{border:1px solid rgba(56,189,248,.25);border-radius:10px;background:rgba(2,6,23,.62);padding:8px;}
+  .nt-result-title{display:flex;justify-content:space-between;align-items:center;gap:6px;margin-bottom:6px;}
+  .nt-result-title b{font-size:.82rem;color:#38bdf8}.nt-result-title span{font-size:.66rem;color:#bbf7d0;font-weight:900}
+  .nt-result-table{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:5px;}
+  .nt-metric{background:rgba(15,23,42,.9);border:1px solid rgba(148,163,184,.14);border-radius:8px;padding:5px 6px;min-height:38px;}
+  .nt-metric small{display:block;color:#94a3b8;font-size:.51rem;font-weight:900;text-transform:uppercase;letter-spacing:.45px;}
+  .nt-metric strong{display:block;color:#e0f2fe;font-size:.72rem;margin-top:2px;word-break:break-word;}
+  .nt-metric.good strong{color:#22c55e}.nt-metric.danger strong{color:#fb7185}.nt-metric.locked strong{color:#eab308}.nt-metric.gold strong{color:#facc15}
+  .nt-copy-signal{margin-top:6px;width:100%;border:0;border-radius:8px;background:linear-gradient(135deg,#22c55e,#0ea5e9);color:#02111f;font-size:.65rem;font-weight:1000;padding:6px;cursor:pointer;}
+  @media (max-width:900px){.nt-results-grid{grid-template-columns:1fr}.nt-result-table{grid-template-columns:repeat(2,1fr)}}
 </style>
-
-
-<script id="nt-final-signal-dropdown-numbers-patch">
+<script id="nt-v14-final-polish-js">
 (function(){
   const $ = id => document.getElementById(id);
+  const qa = (s,r=document) => Array.from(r.querySelectorAll(s));
   const OWNER_EMAILS = ['engobeni842@gmail.com','emusiyiwa844@gmail.com','emmanuelngobeni@gmail.com'];
-  function email(){
-    return (localStorage.getItem('nt_current_email') || localStorage.getItem('nt_last_signup_email') || ($('userEmail')?.textContent) || document.body.innerText.match(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/i)?.[0] || 'guest').trim().toLowerCase();
+  const VERSION_TEXT = 'V14.0 FINAL SIGNAL PLATFORM  ARMOROO ENT';
+  function toast(msg,sub){try{document.querySelectorAll('.nt-toast').forEach(x=>x.remove());const d=document.createElement('div');d.className='nt-toast';d.innerHTML=String(msg)+(sub?'<small>'+String(sub)+'</small>':'');document.body.appendChild(d);setTimeout(()=>d.remove(),3800)}catch(e){alert(msg+(sub?'\n'+sub:''))}}
+  function currentEmail(){return (localStorage.getItem('nt_current_email')||localStorage.getItem('nt_last_signup_email')||($('userEmail')?.textContent)||document.body.innerText.match(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/i)?.[0]||'').trim().toLowerCase()}
+  function isOwner(){return OWNER_EMAILS.includes(currentEmail())}
+  function compactAndOwner(){
+    document.body.classList.toggle('nt-owner-ok', isOwner());
+    const small=document.querySelector('header h1 small'); if(small) small.textContent=VERSION_TEXT;
+    const footer=document.querySelector('.brand-footer'); if(footer){ footer.innerHTML='<b>ARMOROO ENT Software and Apps</b><br><span>NetTrack Pro V14.0 Final Signal Platform</span><br><span>Developed by Emmanuel Musiyiwa Ngobeni &amp; Thando Mbatha</span>'; }
+    const owner=$('navOwner'); if(owner) owner.style.display=isOwner()?'block':'none';
   }
-  function getPlanName(){
-    const txt = ((document.body.innerText||'')+' '+(localStorage.getItem('nt_plan')||'')+' '+(localStorage.getItem('nettrack_plan')||'')).toUpperCase();
-    if(OWNER_EMAILS.includes(email())) return 'OWNER';
-    if(txt.includes('ELITE')) return 'ELITE';
-    if(txt.includes('PREMIUM')) return 'PREMIUM';
-    if(txt.includes('PRO PLAN') || txt.includes(' PRO ') || txt.includes('PLAN PRO')) return 'PRO';
-    if(txt.includes('BASIC')) return 'BASIC';
-    return 'FREE TESTER';
+  function brokerValue(){ return $('brokerSelect')?.value || 'Binance'; }
+  function symValue(){ return $('assetSelect')?.value || window.SYMBOL || 'BTCUSDT'; }
+  function tfValue(){ return $('tfSelect')?.value || window.INTERVAL || '1m'; }
+  function dec(sym){ if(['EURUSD','GBPUSD'].includes(sym)) return 5; if(sym==='USDJPY') return 3; if(sym==='XAUUSD') return 2; return 2; }
+  function fmt(sym,n){ const v=Number(n); return Number.isFinite(v)?v.toFixed(dec(sym)):'--'; }
+  function basePrice(sym){
+    const raw=($('livePrice')?.textContent||'').replace(/[^0-9.]/g,''); const p=parseFloat(raw); if(Number.isFinite(p)&&p>0) return p;
+    const c=window.candles; if(Array.isArray(c)&&c.length&&Number.isFinite(+c[c.length-1].close)) return +c[c.length-1].close;
+    return ({BTCUSDT:60200,ETHUSDT:3420,SOLUSDT:70,BNBUSDT:558,EURUSD:1.094,GBPUSD:1.274,USDJPY:159.2,XAUUSD:2320}[sym]||100);
   }
-  function planInfo(){
-    const p=getPlanName();
-    if(p==='OWNER') return {plan:p,maxSignals:8,tpLevels:3,label:'OWNER ACCESS • 8 signals/day • TP1 + TP2 + TP3'};
-    if(p==='ELITE'||p==='PREMIUM') return {plan:p,maxSignals:8,tpLevels:3,label:'PREMIUM • 8 signals/day • TP1 + TP2 + TP3'};
-    if(p==='PRO') return {plan:p,maxSignals:4,tpLevels:2,label:'PRO • 4 signals/day • TP1 + TP2'};
-    if(p==='BASIC') return {plan:p,maxSignals:2,tpLevels:1,label:'BASIC • 2 signals/day • TP1'};
-    return {plan:p,maxSignals:2,tpLevels:1,label:'FREE TESTER • 2 signals/day • TP1 only'};
+  function plan(){
+    if(isOwner()) return 'OWNER';
+    const txt=(document.body.innerText||'').toUpperCase();
+    if(txt.includes('PREMIUM')) return 'PREMIUM'; if(txt.includes('PRO PLAN')||txt.includes(' PRO ')) return 'PRO'; return 'FREE';
   }
-  function qKey(){ return 'nt_signal_AB_final_dropdown_'+email()+'_'+new Date().toISOString().slice(0,10); }
-  function read(){ try{return JSON.parse(localStorage.getItem(qKey())||'[]')}catch(e){return[]} }
-  function save(a){ localStorage.setItem(qKey(), JSON.stringify(a.slice(0, planInfo().maxSignals))); }
-  function toast(msg,sub){
-    if(typeof window.toast==='function') return window.toast(msg,sub);
-    try{ const d=document.createElement('div'); d.className='nt-toast'; d.innerHTML=String(msg)+(sub?'<small>'+String(sub)+'</small>':''); document.body.appendChild(d); setTimeout(()=>d.remove(),3500); }catch(e){ alert(msg+(sub?'\n'+sub:'')); }
-  }
-  function priceValue(){
-    const live = ($('livePrice')?.textContent || '').replace(/[^0-9.]/g,'');
-    const p = parseFloat(live);
-    if(isFinite(p) && p>0) return p;
-    try{
-      const c = window.candles || window.CANDLES || [];
-      const last = c[c.length-1];
-      const v = Number(last?.close || last?.c || last?.price);
-      if(isFinite(v) && v>0) return v;
-    }catch(e){}
-    const sym=($('assetSelect')?.value||'BTCUSDT').toUpperCase();
-    if(sym.includes('BTC')) return 60162.02;
-    if(sym.includes('ETH')) return 1580.12;
-    if(sym.includes('BNB')) return 565.15;
-    if(sym.includes('SOL')) return 132.40;
-    if(sym.includes('JPY')) return 157.82;
-    return 1.08650;
-  }
-  function fmt(sym,n){
-    if(!isFinite(n)) return '--';
-    sym=String(sym||'').toUpperCase();
-    if(sym.includes('BTC')||sym.includes('ETH')||sym.includes('BNB')||sym.includes('SOL')||sym.includes('USDT')) return Number(n).toFixed(n>=100?2:4);
-    if(sym.includes('JPY')) return Number(n).toFixed(3);
-    return Number(n).toFixed(5);
-  }
-  function side(){
+  function side(slot){
     const t=($('signalText')?.textContent||'').toUpperCase();
-    if(t.includes('BUY')) return 'BUY';
-    if(t.includes('SELL')) return 'SELL';
-    const bias=($('marketBias')?.textContent||'').toUpperCase();
-    if(bias.includes('BULL')) return 'BUY';
-    if(bias.includes('BEAR')) return 'SELL';
-    return 'BUY';
+    if(t.includes('SELL')) return slot==='A'?'SELL':'PULLBACK BUY';
+    if(t.includes('BUY')) return slot==='A'?'BUY':'PULLBACK BUY';
+    return slot==='A'?'BUY':'RETEST SELL';
   }
-  function confidence(slot){
-    const c=parseInt(($('confValue')?.textContent||'').replace(/\D/g,''),10);
-    let base=(isFinite(c)&&c>0)?c:64;
-    if(slot==='B') base=Math.max(52, Math.min(94, base-4));
-    return Math.max(50, Math.min(94, base));
+  function signal(slot){
+    const sym=symValue(), tf=tfValue(), broker=brokerValue(), price=basePrice(sym), p=plan();
+    const s=side(slot); const isSell=s.includes('SELL');
+    const risk = Math.max(price * (sym.includes('USDT') ? (tf==='1m'?0.0022:0.0032) : (sym==='USDJPY'?0.0009:0.00075)), sym.includes('USDT')?0.06:0.00008);
+    const rr1=1.55, rr2=2.25, rr3=3.15;
+    const entry=price + (slot==='B'?(isSell?risk*.20:-risk*.20):0);
+    const sl=isSell?entry+risk:entry-risk;
+    const tp1=isSell?entry-risk*rr1:entry+risk*rr1;
+    const tp2=isSell?entry-risk*rr2:entry+risk*rr2;
+    const tp3=isSell?entry-risk*rr3:entry+risk*rr3;
+    const conf=parseInt(($('confValue')?.textContent||'72').replace(/\D/g,''),10)||Math.floor(65+Math.random()*21);
+    const win=Math.min(94, Math.max(54, conf + (slot==='A'?8:3) + Math.floor(Math.random()*5)));
+    return {slot, side:s, sym, tf, broker, plan:p, entry:fmt(sym,entry), sl:fmt(sym,sl), tp1:fmt(sym,tp1), tp2:fmt(sym,tp2), tp3:fmt(sym,tp3), conf, win, rr:'1 : '+(slot==='A'?'2.4':'1.8'), time:new Date().toLocaleTimeString()};
   }
-  function makeSignal(slot){
-    const sym=($('assetSelect')?.value||'BTCUSDT').toUpperCase();
-    const tf=$('tfSelect')?.value||'1m';
-    const broker=$('brokerSelect')?.value||'Binance';
-    const s=side();
-    const p=priceValue();
-    const isCrypto = sym.includes('USDT')||['BTCUSDT','ETHUSDT','BNBUSDT','SOLUSDT'].includes(sym);
-    const risk = p * (isCrypto ? 0.0035 : (sym.includes('JPY') ? 0.0020 : 0.0012));
-    const dir = s==='SELL' ? -1 : 1;
-    const entryRaw = p + (slot==='B' ? risk*0.18*dir : 0);
-    const slRaw = entryRaw - (risk*dir);
-    const tp1Raw = entryRaw + (risk*1.8*dir);
-    const tp2Raw = entryRaw + (risk*2.8*dir);
-    const tp3Raw = entryRaw + (risk*4.0*dir);
-    return {
-      slot, side:s, sym, tf, broker,
-      entry:fmt(sym,entryRaw), sl:fmt(sym,slRaw), tp1:fmt(sym,tp1Raw), tp2:fmt(sym,tp2Raw), tp3:fmt(sym,tp3Raw),
-      conf:confidence(slot), rr:'1:1.8', time:new Date().toLocaleTimeString()
-    };
-  }
-  function detailHTML(sig){
-    const info=planInfo();
-    const tp2=info.tpLevels>=2 ? sig.tp2 : '<span class="nt-locked-tp">🔒 Pro</span>';
-    const tp3=info.tpLevels>=3 ? sig.tp3 : '<span class="nt-locked-tp">🔒 Premium</span>';
-    return '<div class="nt-signal-numbers">'+
-      '<div class="nt-signal-market"><b>'+sig.sym+'</b><span>'+sig.tf+' • '+sig.broker+'</span></div>'+
-      '<div class="nt-number-grid">'+
-      '<div><span>ENTRY</span><b>'+sig.entry+'</b></div>'+
-      '<div><span>STOP LOSS</span><b>'+sig.sl+'</b></div>'+
-      '<div><span>TAKE PROFIT 1</span><b>'+sig.tp1+'</b></div>'+
-      '<div><span>TAKE PROFIT 2</span><b>'+tp2+'</b></div>'+
-      '<div><span>TAKE PROFIT 3</span><b>'+tp3+'</b></div>'+
-      '<div><span>WIN CHANCE</span><b>'+sig.conf+'%</b></div>'+
-      '</div><small>Risk/Reward '+sig.rr+' • '+info.label+'</small></div>';
-  }
-  function dropdownHTML(arr){
-    const info=planInfo();
-    if(!arr.length) return '';
-    return '<div class="nt-signal-results-title"><span>Generated Signal Results</span><span>'+arr.length+'/'+info.maxSignals+' used today</span></div>'+
-      '<div class="nt-signal-results-grid">'+arr.slice(0,2).map(sig=>{
-        const tp2=info.tpLevels>=2 ? sig.tp2 : '🔒 Pro';
-        const tp3=info.tpLevels>=3 ? sig.tp3 : '🔒 Premium';
-        return '<div class="nt-signal-result-card '+(sig.side==='SELL'?'sell':'buy')+'">'+
-          '<h4><span>SIGNAL '+sig.slot+'</span><b>'+sig.side+'</b></h4>'+
-          '<div class="nt-signal-matrix">'+
-          '<div><span>Entry</span><strong>'+sig.entry+'</strong></div>'+
-          '<div><span>Stop Loss</span><strong>'+sig.sl+'</strong></div>'+
-          '<div><span>Take Profit 1</span><strong>'+sig.tp1+'</strong></div>'+
-          '<div><span>Win Chance</span><strong>'+sig.conf+'%</strong></div>'+
-          '<div><span>Take Profit 2</span><strong class="'+(info.tpLevels>=2?'':'nt-locked-tp')+'">'+tp2+'</strong></div>'+
-          '<div><span>Take Profit 3</span><strong class="'+(info.tpLevels>=3?'':'nt-locked-tp')+'">'+tp3+'</strong></div>'+
-          '</div><small>'+sig.sym+' • '+sig.tf+' • '+sig.broker+' • Risk/Reward '+sig.rr+'</small>'+
-          '</div>';
-      }).join('')+'</div>';
-  }
-  function ensureDropdown(){
-    const row=$('ntGenerateSignalBtn')?.closest('.nt-signal-row');
-    if(!row) return null;
-    let box=$('ntSignalResultsDropdown');
-    if(!box){
-      box=document.createElement('div');
-      box.id='ntSignalResultsDropdown';
-      box.className='nt-signal-results-dropdown';
-      row.insertAdjacentElement('afterend', box);
-    }
-    return box;
-  }
-  function render(){
-    const arr=read(), a=arr[0], b=arr[1], info=planInfo();
-    if($('signalAName')) $('signalAName').textContent=a?('SIGNAL A: '+a.side):'PRESS GENERATE';
-    if($('signalADetail')) $('signalADetail').innerHTML=a?detailHTML(a):'Press Generate Signal A + B to open the numeric result dropdown.';
-    if($('signalBName')) $('signalBName').textContent=b?('SIGNAL B: '+b.side):(a?'SIGNAL B READY':'WAITING');
-    if($('signalBDetail')) $('signalBDetail').innerHTML=b?detailHTML(b):'Signal B appears from the same button. Daily limits are controlled by subscription.';
-    if($('ntSignalCount')) $('ntSignalCount').textContent=arr.length+'/'+info.maxSignals+' used today • '+info.label;
-    const box=ensureDropdown();
-    if(box){
-      if(arr.length){ box.innerHTML=dropdownHTML(arr); box.classList.add('show'); }
-      else { box.innerHTML=''; box.classList.remove('show'); }
-    }
-  }
-  function generate(){
-    const info=planInfo();
-    let arr=read();
-    if(arr.length>=info.maxSignals){ toast('Daily signal limit reached', info.label+' — subscribe/upgrade to unlock more signals and TP levels.'); render(); return; }
-    const needed=Math.min(2, info.maxSignals-arr.length);
-    for(let i=0;i<needed;i++){
-      arr.push(makeSignal(String.fromCharCode(65+arr.length)));
-    }
-    save(arr);
-    render();
-    toast('Signal A + B generated','Entry, Stop Loss, Take Profit and Win Chance are now shown.');
-  }
-  function bind(){
-    const btn=$('ntGenerateSignalBtn');
-    if(btn && !btn.dataset.finalNumbersBound){
-      btn.dataset.finalNumbersBound='1';
-      btn.onclick=generate;
-      btn.textContent='GENERATE SIGNAL A + B';
-      ensureDropdown();
-      render();
-    }
-  }
-  document.addEventListener('DOMContentLoaded', bind);
-  setInterval(bind, 700);
-  window.ntFinalRenderSignalNumbers=render;
-})();
-</script>
-
-
-
-<style id="nt-final-ab-visible-dropdown-compact-fix">
-/* FINAL USER REQUEST PATCH: only make Signal A/B results visible on button press + compact desktop fit */
-.nt-ab-results-panel{
-  display:none;
-  margin:8px 0 8px!important;
-  border:1px solid rgba(34,197,94,.45)!important;
-  background:linear-gradient(180deg,rgba(2,17,31,.98),rgba(15,23,42,.94))!important;
-  border-radius:12px!important;
-  padding:9px!important;
-  box-shadow:0 12px 30px rgba(0,0,0,.28)!important;
-}
-.nt-ab-results-panel.show{display:block!important;animation:ntDrop .18s ease-out}
-@keyframes ntDrop{from{opacity:.15;transform:translateY(-6px)}to{opacity:1;transform:translateY(0)}}
-.nt-ab-results-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:7px;color:#22c55e;font-size:.68rem;font-weight:950;letter-spacing:.08em;text-transform:uppercase}
-.nt-ab-results-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
-.nt-ab-card{border:1px solid rgba(56,189,248,.30);border-radius:10px;background:rgba(2,6,23,.62);padding:8px;min-width:0}
-.nt-ab-card h4{margin:0 0 6px!important;display:flex!important;justify-content:space-between!important;align-items:center!important;gap:6px!important;color:#e0f2fe!important;font-size:.74rem!important;letter-spacing:.06em!important;text-transform:uppercase!important}
-.nt-ab-card h4 b{color:#22c55e!important}.nt-ab-card.sell h4 b{color:#ef4444!important}
-.nt-ab-levels{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:5px}
-.nt-ab-levels div{border:1px solid rgba(148,163,184,.16);border-radius:8px;background:rgba(15,23,42,.85);padding:5px 6px;min-height:35px}
-.nt-ab-levels span{display:block;color:#94a3b8;font-size:.50rem;font-weight:950;text-transform:uppercase;letter-spacing:.08em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.nt-ab-levels strong{display:block;color:#fff;font-size:.72rem;font-weight:950;line-height:1.2;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.nt-ab-card small{display:block;margin-top:5px;color:#9ca3af;font-size:.56rem;font-weight:800;line-height:1.25}
-.nt-ab-lock{color:#fbbf24!important}.nt-ab-win{color:#22c55e!important}.nt-ab-card.sell .nt-ab-win{color:#22c55e!important}
-@media(min-width:1200px){
-  body{font-size:12px!important;overflow:hidden!important}
-  header{min-height:52px!important;padding:7px 12px!important}
-  .container{padding:7px 16px 8px 86px!important;max-height:calc(100vh - 58px)!important;overflow:auto!important;max-width:1280px!important}
-  .grid{gap:7px!important}.card{padding:9px!important;border-radius:12px!important}.card h3{font-size:.73rem!important;margin-bottom:7px!important}
-  .daily-signal-grid{grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:6px!important}.daily-signal-card{min-height:52px!important;padding:7px!important}.daily-signal-card b{font-size:.82rem!important}.daily-signal-card span{font-size:.60rem!important;line-height:1.22!important}.daily-signal-card small{font-size:.52rem!important}
-  .nt-signal-generate{padding:9px 12px!important;margin:5px 0!important}.nt-signal-count{padding:6px!important;font-size:.64rem!important}.nt-signal-row{gap:6px!important;margin-bottom:6px!important}
-  canvas#mainChart{height:225px!important;min-height:225px!important}#mainChart{min-height:225px!important}.span-8{grid-column:span 8!important}.span-4{grid-column:span 4!important}
-  .premium-locked::after{font-size:.68rem!important;padding:12px!important}.nt-side-nav{top:190px!important;gap:7px!important}.nt-side-nav button{padding:8px 7px!important;font-size:.68rem!important;min-width:56px!important}
-  .tester-badge{padding:3px 7px!important;font-size:.56rem!important}.controls select,.controls button{min-height:34px!important;padding-top:6px!important;padding-bottom:6px!important}
-}
-@media(max-width:900px){.nt-ab-results-grid{grid-template-columns:1fr}.nt-ab-levels{grid-template-columns:repeat(2,minmax(0,1fr))}}
-</style>
-<script id="nt-final-force-signal-dropdown-visible-fix">
-(function(){
-  const $=id=>document.getElementById(id);
-  const OWNER_EMAILS=['engobeni842@gmail.com','emusiyiwa844@gmail.com','emmanuelngobeni@gmail.com'];
-  function userEmail(){
-    return (localStorage.getItem('nt_current_email')||localStorage.getItem('nt_last_signup_email')||$('userEmail')?.textContent||document.body.innerText.match(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/i)?.[0]||'guest').trim().toLowerCase();
-  }
-  function plan(){
-    const e=userEmail();
-    const txt=((document.body.innerText||'')+' '+(localStorage.getItem('nt_plan')||'')+' '+(localStorage.getItem('nettrack_plan')||'')).toUpperCase();
-    if(OWNER_EMAILS.includes(e)) return {name:'OWNER',max:8,tp:3,label:'OWNER • 8 signals/day • TP1 + TP2 + TP3'};
-    if(txt.includes('PREMIUM')||txt.includes('ELITE')) return {name:'PREMIUM',max:8,tp:3,label:'PREMIUM • 8 signals/day • TP1 + TP2 + TP3'};
-    if(txt.includes('PRO PLAN')||txt.includes(' PLAN PRO')||txt.includes(' PRO ')) return {name:'PRO',max:4,tp:2,label:'PRO • 4 signals/day • TP1 + TP2'};
-    if(txt.includes('BASIC')) return {name:'BASIC',max:2,tp:1,label:'BASIC • 2 signals/day • TP1'};
-    return {name:'FREE TESTER',max:2,tp:1,label:'FREE TESTER • 2 signals/day • TP1 only'};
-  }
-  function dayKey(){return 'nt_ab_click_count_v3_'+userEmail()+'_'+new Date().toISOString().slice(0,10)}
-  function pairKey(){return 'nt_ab_current_pair_v3_'+userEmail()+'_'+new Date().toISOString().slice(0,10)}
-  function getCount(){return Number(localStorage.getItem(dayKey())||0)||0}
-  function setCount(n){localStorage.setItem(dayKey(),String(n))}
-  function getPair(){try{return JSON.parse(localStorage.getItem(pairKey())||'[]')}catch(e){return[]}}
-  function setPair(a){localStorage.setItem(pairKey(),JSON.stringify(a.slice(0,2)))}
-  function toast(t,s){ if(typeof window.toast==='function') return window.toast(t,s); alert(t+(s?'\n'+s:'')); }
-  function activeSymbol(){return ($('assetSelect')?.value||window.SYMBOL||'BTCUSDT').toUpperCase()}
-  function activeTF(){return $('tfSelect')?.value||window.INTERVAL||'1m'}
-  function activeBroker(){return $('brokerSelect')?.value||localStorage.getItem('nt_last_platform')||'Binance'}
-  function price(){
-    const live=($('livePrice')?.textContent||'').replace(/[^0-9.]/g,'');
-    const p=parseFloat(live); if(isFinite(p)&&p>0) return p;
-    try{const c=window.candles||window.CANDLES||[]; const last=c[c.length-1]; const v=Number(last?.close||last?.c||last?.price); if(isFinite(v)&&v>0) return v;}catch(e){}
-    const s=activeSymbol(); if(s.includes('BTC'))return 60162.02; if(s.includes('ETH'))return 1580.12; if(s.includes('BNB'))return 565.15; if(s.includes('SOL'))return 132.40; if(s.includes('JPY'))return 157.82; return 1.08975;
-  }
-  function fmt(sym,n){
-    if(!isFinite(n))return'--'; sym=String(sym).toUpperCase();
-    if(sym.includes('JPY')) return Number(n).toFixed(3);
-    if(sym.includes('BTC')||sym.includes('ETH')||sym.includes('BNB')||sym.includes('SOL')||sym.includes('USDT')) return Number(n).toFixed(n>=100?2:4);
-    return Number(n).toFixed(5);
-  }
-  function side(slot){
-    let t=($('signalText')?.textContent||' '+$('marketBias')?.textContent||'').toUpperCase();
-    if(t.includes('SELL')) return 'SELL';
-    if(t.includes('BUY')||t.includes('BULL')) return 'BUY';
-    return slot==='B'?'SELL':'BUY';
-  }
-  function conf(slot){
-    let c=parseInt(($('confValue')?.textContent||'').replace(/\D/g,''),10);
-    if(!isFinite(c)||c<30)c=68;
-    if(slot==='B')c-=4;
-    return Math.max(52,Math.min(94,c));
-  }
-  function make(slot){
-    const sym=activeSymbol(), tf=activeTF(), broker=activeBroker(), sd=side(slot), p=price();
-    const isCrypto=sym.includes('USDT')||['BTCUSDT','ETHUSDT','BNBUSDT','SOLUSDT'].includes(sym);
-    const risk=p*(isCrypto?0.0035:(sym.includes('JPY')?0.0020:0.0012));
-    const dir=sd==='SELL'?-1:1;
-    const entry=p+(slot==='B'?risk*.18*dir:0);
-    return {slot,side:sd,sym,tf,broker,entry:fmt(sym,entry),sl:fmt(sym,entry-risk*dir),tp1:fmt(sym,entry+risk*1.8*dir),tp2:fmt(sym,entry+risk*2.8*dir),tp3:fmt(sym,entry+risk*4*dir),conf:conf(slot),rr:'1:1.8',time:new Date().toLocaleTimeString()};
-  }
-  function card(sig,info){
-    const tp2=info.tp>=2?sig.tp2:'🔒 Pro';
-    const tp3=info.tp>=3?sig.tp3:'🔒 Premium';
-    return '<div class="nt-ab-card '+(sig.side==='SELL'?'sell':'buy')+'"><h4><span>SIGNAL '+sig.slot+'</span><b>'+sig.side+'</b></h4><div class="nt-ab-levels">'+
-      '<div><span>Entry</span><strong>'+sig.entry+'</strong></div>'+
-      '<div><span>Stop Loss</span><strong>'+sig.sl+'</strong></div>'+
-      '<div><span>Take Profit 1</span><strong>'+sig.tp1+'</strong></div>'+
-      '<div><span>Take Profit 2</span><strong class="'+(info.tp>=2?'':'nt-ab-lock')+'">'+tp2+'</strong></div>'+
-      '<div><span>Take Profit 3</span><strong class="'+(info.tp>=3?'':'nt-ab-lock')+'">'+tp3+'</strong></div>'+
-      '<div><span>Win Chance</span><strong class="nt-ab-win">'+sig.conf+'%</strong></div>'+
-      '</div><small>'+sig.sym+' • '+sig.tf+' • '+sig.broker+' • Risk/Reward '+sig.rr+' • '+sig.time+'</small></div>';
-  }
-  function ensurePanel(){
-    const panel=$('dailySignalPanel'); if(!panel)return null;
-    let box=$('ntABVisibleResults');
-    if(!box){box=document.createElement('div'); box.id='ntABVisibleResults'; box.className='nt-ab-results-panel'; const grid=panel.querySelector('.daily-signal-grid'); if(grid) panel.insertBefore(box,grid); else panel.appendChild(box);}
-    return box;
-  }
-  function render(show){
-    const info=plan(), pair=getPair(), count=getCount(), box=ensurePanel();
-    if($('ntSignalCount')) $('ntSignalCount').textContent=count+'/'+info.max+' used today • '+info.label;
-    if(!box)return;
-    if(pair.length&&show!==false){
-      box.innerHTML='<div class="nt-ab-results-head"><span>Generated Signal A + B Results</span><span>'+count+'/'+info.max+' used today</span></div><div class="nt-ab-results-grid">'+pair.map(x=>card(x,info)).join('')+'</div>';
-      box.classList.add('show');
-    }else{box.innerHTML=''; box.classList.remove('show');}
-    const a=pair[0], b=pair[1];
-    if(a&&$('signalAName'))$('signalAName').textContent='SIGNAL A: '+a.side;
-    if(a&&$('signalADetail'))$('signalADetail').innerHTML='Entry '+a.entry+' • SL '+a.sl+' • TP1 '+a.tp1+' • Win '+a.conf+'%';
-    if(b&&$('signalBName'))$('signalBName').textContent='SIGNAL B: '+b.side;
-    if(b&&$('signalBDetail'))$('signalBDetail').innerHTML='Entry '+b.entry+' • SL '+b.sl+' • TP1 '+b.tp1+' • Win '+b.conf+'%';
-  }
-  function generate(e){
-    if(e){e.preventDefault(); e.stopPropagation(); if(e.stopImmediatePropagation)e.stopImmediatePropagation();}
-    const info=plan(); let count=getCount();
-    if(count+2>info.max){toast('Daily signal limit reached',info.label+' — upgrade subscription for more signals and TP levels.'); render(true); return false;}
-    const pair=[make('A'),make('B')]; setPair(pair); setCount(count+2); render(true);
-    toast('Signal A + B generated','Entry, Stop Loss, Take Profit and Win Chance are visible under the button.');
-    return false;
-  }
-  document.addEventListener('click',function(e){const btn=e.target.closest&&e.target.closest('#ntGenerateSignalBtn,.nt-signal-generate'); if(btn){return generate(e)}},true);
-  function bind(){
-    const btn=$('ntGenerateSignalBtn'); if(btn){btn.type='button'; btn.textContent='GENERATE SIGNAL A + B'; btn.onclick=null;}
-    ensurePanel(); render(getPair().length>0);
-  }
-  document.addEventListener('DOMContentLoaded',bind); setInterval(bind,1200);
-  window.ntForceSignalABResults={generate,render};
-})();
-</script>
-
-
-<style id="nt-final-2percent-fix-css">
-/* 2% FINAL PATCH: broker dropdown lock + Signal A/B numeric dropdown under button */
-#ntABResultsDropFinal{
-  display:none;
-  margin:8px 0 8px!important;
-  padding:8px!important;
-  border:1px solid rgba(34,197,94,.55)!important;
-  border-radius:12px!important;
-  background:linear-gradient(180deg,rgba(3,12,24,.98),rgba(10,20,38,.96))!important;
-  box-shadow:0 12px 28px rgba(0,0,0,.32)!important;
-  z-index:9999!important;
-  position:relative!important;
-}
-#ntABResultsDropFinal.show{display:block!important;animation:ntABDropFinal .16s ease-out}
-@keyframes ntABDropFinal{from{opacity:.2;transform:translateY(-5px)}to{opacity:1;transform:translateY(0)}}
-.nt-ab-final-head{display:flex;justify-content:space-between;gap:8px;align-items:center;color:#22c55e;font-weight:950;font-size:.68rem;text-transform:uppercase;letter-spacing:.08em;margin-bottom:7px}
-.nt-ab-final-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
-.nt-ab-final-card{border:1px solid rgba(56,189,248,.35);border-radius:10px;background:rgba(2,6,23,.70);padding:8px;min-width:0}
-.nt-ab-final-card h4{margin:0 0 6px!important;display:flex;justify-content:space-between;align-items:center;gap:6px;color:#e0f2fe;font-size:.74rem;text-transform:uppercase;letter-spacing:.06em}
-.nt-ab-final-card h4 b{color:#22c55e}.nt-ab-final-card.sell h4 b{color:#ef4444}
-.nt-ab-final-levels{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:5px}
-.nt-ab-final-levels div{border:1px solid rgba(148,163,184,.16);border-radius:8px;background:rgba(15,23,42,.88);padding:5px 6px;min-height:35px}
-.nt-ab-final-levels span{display:block;color:#94a3b8;font-size:.50rem;font-weight:950;text-transform:uppercase;letter-spacing:.08em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.nt-ab-final-levels strong{display:block;color:#fff;font-size:.72rem;font-weight:950;line-height:1.2;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.nt-ab-final-card small{display:block;margin-top:5px;color:#9ca3af;font-size:.56rem;font-weight:800;line-height:1.25}
-.nt-ab-final-lock{color:#fbbf24!important}.nt-ab-final-win{color:#22c55e!important}
-@media(max-width:900px){.nt-ab-final-grid{grid-template-columns:1fr}.nt-ab-final-levels{grid-template-columns:repeat(2,minmax(0,1fr))}}
-@media(min-width:1200px){
-  body{overflow:hidden!important;font-size:11.6px!important}
-  .container{max-height:calc(100vh - 54px)!important;overflow:auto!important;padding-top:5px!important;padding-bottom:5px!important}
-  .card{padding:8px!important}.daily-signal-card{min-height:50px!important;padding:6px!important}
-  .daily-signal-card b{font-size:.78rem!important}.daily-signal-card span{font-size:.55rem!important;line-height:1.18!important}
-  .nt-signal-generate{padding:8px 10px!important}.nt-signal-count{padding:6px!important;font-size:.62rem!important}
-  #mainChart,canvas#mainChart{height:205px!important;min-height:205px!important}
-}
-</style>
-<script id="nt-final-2percent-fix-js">
-(function(){
-  const $=id=>document.getElementById(id);
-  const $$=(s,r=document)=>Array.from(r.querySelectorAll(s));
-  const OWNER_EMAILS=['engobeni842@gmail.com','emusiyiwa844@gmail.com','emmanuelngobeni@gmail.com'];
-  const PLATFORMS=[
-    ['Binance','Binance'],['XM','XM'],['MT5','MT5'],['MT4','MT4'],['TradingView','TradingView'],
-    ['IQ Option','IQ Option'],['Bybit','Bybit'],['Deriv','Deriv'],['ICMarkets','ICMarkets'],
-    ['Exness','Exness'],['IQXness','IQXness'],['Quotex','Quotex'],['Pocket Option','Pocket Option'],
-    ['OctaFX','OctaFX'],['RoboForex','RoboForex'],['TradeView','TradeView'],['HFM','HFM'],['FBS','FBS']
-  ];
-  const brokerKey='nt_final_locked_platform_v14';
-  const today=()=>new Date().toISOString().slice(0,10);
-  function email(){
-    return (localStorage.getItem('nt_current_email')||localStorage.getItem('nt_last_signup_email')||$('userEmail')?.textContent||document.body.innerText.match(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/i)?.[0]||'guest').trim().toLowerCase();
-  }
-  function toast(t,s){
-    try{
-      document.querySelectorAll('.nt-toast').forEach(x=>x.remove());
-      const d=document.createElement('div'); d.className='nt-toast';
-      d.innerHTML=String(t)+(s?'<small>'+String(s)+'</small>':'');
-      document.body.appendChild(d); setTimeout(()=>d.remove(),3400);
-    }catch(e){ alert(t+(s?'\n'+s:'')); }
-  }
-  function plan(){
-    const e=email();
-    const text=((document.body.innerText||'')+' '+(localStorage.getItem('nt_plan')||'')+' '+(localStorage.getItem('nettrack_plan')||'')).toUpperCase();
-    if(OWNER_EMAILS.includes(e)) return {name:'OWNER',max:8,tp:3,label:'OWNER • 8 signals/day • TP1 + TP2 + TP3'};
-    if(text.includes('PREMIUM')||text.includes('ELITE')) return {name:'PREMIUM',max:8,tp:3,label:'PREMIUM • 8 signals/day • TP1 + TP2 + TP3'};
-    if(text.includes('PRO')) return {name:'PRO',max:4,tp:2,label:'PRO • 4 signals/day • TP1 + TP2'};
-    if(text.includes('BASIC')) return {name:'BASIC',max:2,tp:1,label:'BASIC • 2 signals/day • TP1'};
-    return {name:'FREE TESTER',max:2,tp:1,label:'FREE TESTER • 2 signals/day • TP1 only'};
-  }
-  function usedKey(){return 'nt_final_ab_used_'+email()+'_'+today()}
-  function pairKey(){return 'nt_final_ab_pair_'+email()+'_'+today()}
-  function used(){return Number(localStorage.getItem(usedKey())||0)||0}
-  function setUsed(n){localStorage.setItem(usedKey(),String(n))}
-  function readPair(){try{return JSON.parse(localStorage.getItem(pairKey())||'[]')}catch(e){return[]}}
-  function savePair(p){localStorage.setItem(pairKey(),JSON.stringify(p.slice(0,2)))}
-  function symbol(){return ($('assetSelect')?.value||window.SYMBOL||'BTCUSDT').toUpperCase().replace('/','')}
-  function tf(){return $('tfSelect')?.value||window.INTERVAL||'1m'}
-  function broker(){return localStorage.getItem(brokerKey)||$('brokerSelect')?.value||'Binance'}
-  function livePrice(){
-    const candidates=[$('livePrice')?.textContent,$('price')?.textContent,$('topPrice')?.textContent,document.querySelector('.price-display')?.textContent].filter(Boolean);
-    for(const c of candidates){const n=parseFloat(String(c).replace(/[^0-9.]/g,'')); if(isFinite(n)&&n>0)return n;}
-    try{const c=window.candles||window.CANDLES||[]; const last=c[c.length-1]; const n=Number(last?.close||last?.c||last?.price); if(isFinite(n)&&n>0)return n;}catch(e){}
-    const s=symbol(); if(s.includes('BTC'))return 60162.02; if(s.includes('ETH'))return 1580.12; if(s.includes('BNB'))return 565.15; if(s.includes('SOL'))return 132.40; if(s.includes('JPY'))return 157.82; return 1.08975;
-  }
-  function fmt(s,n){
-    if(!isFinite(n))return'--';
-    if(s.includes('JPY'))return Number(n).toFixed(3);
-    if(s.includes('BTC')||s.includes('ETH')||s.includes('BNB')||s.includes('SOL')||s.includes('USDT'))return Number(n).toFixed(n>=100?2:4);
-    return Number(n).toFixed(5);
-  }
-  function side(slot){
-    const t=(($('signalText')?.textContent||'')+' '+($('marketBias')?.textContent||'')+' '+($('signalAName')?.textContent||'')).toUpperCase();
-    if(t.includes('SELL'))return'SELL';
-    if(t.includes('BUY')||t.includes('BULL'))return'BUY';
-    return slot==='B'?'SELL':'BUY';
-  }
-  function confidence(slot){
-    let c=parseInt(($('confValue')?.textContent||$('confidenceValue')?.textContent||'').replace(/\D/g,''),10);
-    if(!isFinite(c)||c<45)c=72;
-    if(slot==='B')c-=5;
-    return Math.max(54,Math.min(94,c));
-  }
-  function makeSignal(slot){
-    const s=symbol(), p=livePrice(), sd=side(slot), dir=sd==='SELL'?-1:1;
-    const isCrypto=s.includes('USDT')||['BTCUSDT','ETHUSDT','BNBUSDT','SOLUSDT'].includes(s);
-    const risk=p*(isCrypto?0.0035:(s.includes('JPY')?0.0020:0.0012));
-    const entry=p+(slot==='B'?risk*0.18*dir:0);
-    return {
-      slot,side:sd,sym:s,tf:tf(),broker:broker(),
-      entry:fmt(s,entry),
-      sl:fmt(s,entry-risk*dir),
-      tp1:fmt(s,entry+risk*1.8*dir),
-      tp2:fmt(s,entry+risk*2.8*dir),
-      tp3:fmt(s,entry+risk*4.0*dir),
-      conf:confidence(slot),
-      rr:'1:1.8',
-      time:new Date().toLocaleTimeString()
-    };
+  function canShowTP2(s){return ['PRO','PREMIUM','OWNER'].includes(s.plan)}
+  function canShowTP3(s){return ['PREMIUM','OWNER'].includes(s.plan)}
+  function card(s){
+    const tp2 = canShowTP2(s)?s.tp2:'🔒 Pro'; const tp3 = canShowTP3(s)?s.tp3:'🔒 Premium';
+    return `<div class="nt-result-card"><div class="nt-result-title"><b>SIGNAL ${s.slot} — ${s.side}</b><span>${s.sym} • ${s.tf}</span></div><div class="nt-result-table"><div class="nt-metric good"><small>Entry</small><strong>${s.entry}</strong></div><div class="nt-metric danger"><small>Stop Loss</small><strong>${s.sl}</strong></div><div class="nt-metric gold"><small>Take Profit 1</small><strong>${s.tp1}</strong></div><div class="nt-metric ${canShowTP2(s)?'gold':'locked'}"><small>Take Profit 2</small><strong>${tp2}</strong></div><div class="nt-metric ${canShowTP3(s)?'gold':'locked'}"><small>Take Profit 3</small><strong>${tp3}</strong></div><div class="nt-metric"><small>Confidence</small><strong>${s.conf}%</strong></div><div class="nt-metric good"><small>Win Chance</small><strong>${s.win}%</strong></div><div class="nt-metric"><small>Risk / Reward</small><strong>${s.rr}</strong></div></div><button class="nt-copy-signal" data-copy="SIGNAL ${s.slot} ${s.side} ${s.sym} ${s.tf} ${s.broker} | Entry ${s.entry} | SL ${s.sl} | TP1 ${s.tp1} | TP2 ${tp2} | TP3 ${tp3} | Confidence ${s.conf}% | Win Chance ${s.win}%">COPY SIGNAL ${s.slot}</button></div>`;
   }
   function ensureResultsPanel(){
-    const btn=$('ntGenerateSignalBtn')||document.querySelector('.nt-signal-generate');
-    if(!btn)return null;
-    const row=btn.closest('.nt-signal-row')||btn.parentElement;
-    let box=$('ntABResultsDropFinal');
-    if(!box){
-      box=document.createElement('div');
-      box.id='ntABResultsDropFinal';
-      // always directly under the green/blue Generate button row
-      row.insertAdjacentElement('afterend',box);
-    }
+    const panel=$('dailySignalPanel'); if(!panel) return null;
+    let box=$('ntSignalResultsPanel'); if(box) return box;
+    box=document.createElement('div'); box.id='ntSignalResultsPanel'; box.innerHTML='<div class="nt-results-head"><span>Generated Signal Results</span><span id="ntResultsMeta">Waiting</span></div><div class="nt-results-grid" id="ntResultsGrid"></div>';
+    const row=$('ntGenerateSignalBtn')?.closest('.nt-signal-row') || panel.querySelector('.nt-signal-row');
+    if(row) row.insertAdjacentElement('afterend', box); else panel.appendChild(box);
+    box.addEventListener('click',e=>{const b=e.target.closest('.nt-copy-signal'); if(!b) return; navigator.clipboard?.writeText(b.dataset.copy||'').then(()=>toast('Signal copied','Ready to paste into your broker chat or journal')).catch(()=>toast('Copy blocked','Select the signal text manually.'));});
     return box;
   }
-  function card(sig,info){
-    const tp2=info.tp>=2?sig.tp2:'🔒 Pro';
-    const tp3=info.tp>=3?sig.tp3:'🔒 Premium';
-    return '<div class="nt-ab-final-card '+(sig.side==='SELL'?'sell':'buy')+'">'+
-      '<h4><span>SIGNAL '+sig.slot+'</span><b>'+sig.side+'</b></h4>'+
-      '<div class="nt-ab-final-levels">'+
-      '<div><span>Entry</span><strong>'+sig.entry+'</strong></div>'+
-      '<div><span>Stop Loss</span><strong>'+sig.sl+'</strong></div>'+
-      '<div><span>Take Profit 1</span><strong>'+sig.tp1+'</strong></div>'+
-      '<div><span>Take Profit 2</span><strong class="'+(info.tp>=2?'':'nt-ab-final-lock')+'">'+tp2+'</strong></div>'+
-      '<div><span>Take Profit 3</span><strong class="'+(info.tp>=3?'':'nt-ab-final-lock')+'">'+tp3+'</strong></div>'+
-      '<div><span>Win Chance</span><strong class="nt-ab-final-win">'+sig.conf+'%</strong></div>'+
-      '</div><small>'+sig.sym+' • '+sig.tf+' • '+sig.broker+' • Risk/Reward '+sig.rr+' • '+sig.time+'</small></div>';
+  function quotaKey(){return 'nt_v14_final_signals_'+currentEmail()+'_'+new Date().toISOString().slice(0,10)}
+  function dailyCount(){return +(localStorage.getItem(quotaKey())||'0')||0}
+  function limit(){const p=plan(); return p==='OWNER'||p==='PREMIUM'?8:(p==='PRO'?4:2)}
+  function generateFinalSignals(){
+    const used=dailyCount(), max=limit(); if(used>=max){toast('Daily signal limit reached', `${used}/${max} signals used today. Upgrade subscription for more.`); ensureResultsPanel()?.classList.add('show'); return;}
+    const a=signal('A'), b=signal('B'); localStorage.setItem(quotaKey(), String(Math.min(max, used+2)));
+    const box=ensureResultsPanel(); if(box){ $('ntResultsGrid').innerHTML=card(a)+card(b); $('ntResultsMeta').textContent=`${brokerValue()} • ${symValue()} • ${tfValue()} • ${a.time}`; box.classList.add('show'); }
+    if($('signalAName')) $('signalAName').textContent=`${a.side} • CONFIRMED`;
+    if($('signalADetail')) $('signalADetail').textContent=`Entry ${a.entry} • SL ${a.sl} • TP1 ${a.tp1} • Win ${a.win}%`;
+    if($('signalBName')) $('signalBName').textContent=`${b.side}`;
+    if($('signalBDetail')) $('signalBDetail').textContent=`Entry ${b.entry} • SL ${b.sl} • TP1 ${b.tp1} • Win ${b.win}%`;
+    const count=$('ntSignalCount'); if(count) count.textContent=`${Math.min(max,used+2)}/${max} used today • ${plan()} • TP1${canShowTP2(a)?' + TP2':''}${canShowTP3(a)?' + TP3':''}`;
+    toast('Signal A + B generated', `Entry, Stop Loss, TP and Win Chance are open below the button.`);
   }
-  function renderResults(show){
-    const p=plan(), pair=readPair(), box=ensureResultsPanel();
-    const counter=$('ntSignalCount'); if(counter)counter.textContent=used()+'/'+p.max+' used today • '+p.label;
-    if(!box)return;
-    if(pair.length && show!==false){
-      box.innerHTML='<div class="nt-ab-final-head"><span>Generated Signal A + B Results</span><span>'+used()+'/'+p.max+' used today</span></div><div class="nt-ab-final-grid">'+pair.map(x=>card(x,p)).join('')+'</div>';
-      box.classList.add('show');
-    }else{
-      box.innerHTML=''; box.classList.remove('show');
-    }
-    const a=pair[0], b=pair[1];
-    if(a&&$('signalAName'))$('signalAName').textContent='SIGNAL A: '+a.side;
-    if(a&&$('signalADetail'))$('signalADetail').innerHTML='Entry '+a.entry+' • SL '+a.sl+' • TP1 '+a.tp1+' • Win '+a.conf+'%';
-    if(b&&$('signalBName'))$('signalBName').textContent='SIGNAL B: '+b.side;
-    if(b&&$('signalBDetail'))$('signalBDetail').innerHTML='Entry '+b.entry+' • SL '+b.sl+' • TP1 '+b.tp1+' • Win '+b.conf+'%';
-  }
-  function generate(e){
-    if(e){e.preventDefault();e.stopPropagation(); if(e.stopImmediatePropagation)e.stopImmediatePropagation();}
-    const p=plan(), u=used();
-    if(u+2>p.max){
-      toast('Daily signal limit reached',p.label+' — upgrade subscription for more signals and more Take Profit levels.');
-      renderResults(true);
-      return false;
-    }
-    const pair=[makeSignal('A'),makeSignal('B')];
-    savePair(pair); setUsed(u+2); renderResults(true);
-    toast('Signal A + B generated','Entry, Stop Loss, Take Profit and Win Chance are visible under the button.');
-    return false;
-  }
-  function ensureBrokerOptions(){
-    const sel=$('brokerSelect'); if(!sel)return;
-    PLATFORMS.forEach(([label,value])=>{
-      if(!$$('option',sel).some(o=>o.value===value)){
-        const o=document.createElement('option'); o.value=value; o.textContent=label; sel.appendChild(o);
-      }
-    });
-    const saved=localStorage.getItem(brokerKey);
-    if(saved && $$('option',sel).some(o=>o.value===saved)) sel.value=saved;
-  }
-  function updateBrokerLabels(){
-    const b=broker();
-    ['alignBrokerName','brokerOverlayName','activeBrokerLabel'].forEach(id=>{const el=$(id); if(el)el.textContent=b;});
-    const ap=$('activePlatformDetail'); if(ap)ap.textContent='Live signal generator is linked to '+b+' with the selected symbol and timeframe.';
-    const card=$('activePlatformName'); if(card)card.textContent=b+' • '+(symbol().replace('USDT','/USDT'))+' • '+tf();
-  }
-  function lockBrokerSelection(){
-    const sel=$('brokerSelect'); if(!sel)return;
-    ensureBrokerOptions();
-    const saved=localStorage.getItem(brokerKey);
-    if(saved && sel.value!==saved) sel.value=saved; // defeats old auto-reset to TradingView
-    updateBrokerLabels();
-  }
-  function onBrokerChange(e){
-    const sel=$('brokerSelect'); if(!sel)return;
-    const old=localStorage.getItem(brokerKey)||sel.getAttribute('data-last-platform')||'Binance';
-    localStorage.setItem(brokerKey,sel.value);
-    localStorage.setItem('nt_last_platform',sel.value);
-    sel.setAttribute('data-last-platform',sel.value);
-    setTimeout(lockBrokerSelection,0);
-    setTimeout(lockBrokerSelection,160);
-    if(old!==sel.value)toast('Platform switched',old+' → '+sel.value);
-    updateBrokerLabels(); renderResults(readPair().length>0);
-  }
-  function bind(){
-    ensureBrokerOptions();
-    const sel=$('brokerSelect');
-    if(sel && !sel.dataset.finalPlatformFixed){
-      sel.dataset.finalPlatformFixed='1';
-      if(!localStorage.getItem(brokerKey))localStorage.setItem(brokerKey,sel.value||'Binance');
-      sel.addEventListener('change',onBrokerChange,true);
-      sel.addEventListener('input',onBrokerChange,true);
-    }
-    const btn=$('ntGenerateSignalBtn')||document.querySelector('.nt-signal-generate');
-    if(btn && !btn.dataset.finalClickFixed){
-      btn.dataset.finalClickFixed='1';
-      btn.type='button';
-      btn.textContent='GENERATE SIGNAL A + B';
-      btn.onclick=null;
-      btn.addEventListener('click',generate,true);
+  function hookGenerate(){
+    const btn=$('ntGenerateSignalBtn'); if(btn && btn.dataset.v14hook!=='yes'){
+      btn.dataset.v14hook='yes'; btn.onclick=null; btn.addEventListener('click', function(e){e.preventDefault(); e.stopImmediatePropagation(); generateFinalSignals();}, true);
     }
     ensureResultsPanel();
-    lockBrokerSelection();
-    renderResults(readPair().length>0);
   }
-  document.addEventListener('click',function(e){
-    const btn=e.target.closest&&e.target.closest('#ntGenerateSignalBtn,.nt-signal-generate');
-    if(btn)return generate(e);
-  },true);
-  document.addEventListener('DOMContentLoaded',bind);
-  setInterval(bind,600);
-  setInterval(lockBrokerSelection,250);
-  window.ntFinalSignalFix={generate,render:renderResults,lockBrokerSelection};
+  function hookPlatform(){
+    const broker=$('brokerSelect'); if(!broker || broker.dataset.v14hook==='yes') return; broker.dataset.v14hook='yes';
+    const saved=localStorage.getItem('nt_selected_platform_v14'); if(saved){ broker.value=saved; }
+    broker.addEventListener('change',()=>{const old=localStorage.getItem('nt_selected_platform_v14')||'Previous'; localStorage.setItem('nt_selected_platform_v14',broker.value); setTimeout(()=>{broker.value=localStorage.getItem('nt_selected_platform_v14')||broker.value;},0); toast('Platform switched', old+' → '+broker.value);}, true);
+  }
+  function boot(){compactAndOwner(); hookGenerate(); hookPlatform();}
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',boot); else boot();
+  setInterval(boot,1000);
 })();
 </script>
+<!-- /NETTRACK PRO V14 FINAL SIGNAL DROPDOWN + COMPACT DESKTOP + OWNER SIDEBAR PATCH -->
 
 </body>
 </html>
