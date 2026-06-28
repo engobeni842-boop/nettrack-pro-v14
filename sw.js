@@ -1,4 +1,4 @@
-const CACHE_NAME = 'nettrack-natural-signal-platform-final-v14-2-clean-20260628';
+const CACHE_NAME = 'nettrack-final-signal-v14-3-real-dropdown-20260628-2';
 const ASSETS = [
   './',
   './index.html',

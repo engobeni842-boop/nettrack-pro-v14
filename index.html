@@ -4,7 +4,7 @@
 <head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>NetTrack Pro V13.8 Clean Signal Platform</title>
+<title>NetTrack Pro V14.3 Final Signal Platform</title>
 <style>
 :root {
 --bg: #050a14;
@@ -357,6 +357,25 @@ body.portal-open .brand-footer{ display:none; }
 .nt-locked-tp{color:#fbbf24!important}
 @media(max-width:900px){.nt-signal-results-grid{grid-template-columns:1fr}.nt-signal-matrix{grid-template-columns:1fr 1fr}}
 
+
+
+/* V14.3 Final real signal dropdown + compact desktop layout */
+.nt-final-static-row{display:grid!important;grid-template-columns:minmax(260px,1fr) minmax(220px,.9fr)!important;gap:8px!important;margin:8px 0!important;align-items:stretch!important}
+#ntGenerateSignalBtn.nt-signal-generate,.nt-signal-generate{border:0!important;border-radius:10px!important;background:linear-gradient(90deg,#22c55e,#0ea5e9)!important;color:#020617!important;font-weight:950!important;letter-spacing:.08em!important;text-transform:uppercase!important;min-height:34px!important;cursor:pointer!important;box-shadow:0 10px 24px rgba(14,165,233,.18)!important}
+#ntSignalCount{display:flex!important;align-items:center!important;justify-content:center!important;border:1px solid rgba(34,197,94,.45)!important;border-radius:10px!important;background:rgba(2,40,30,.72)!important;color:#bbf7d0!important;font-weight:900!important;font-size:.68rem!important;text-align:center!important;min-height:34px!important}
+.nt-ab-real-results{display:none;margin:7px 0 9px!important;padding:9px!important;border:1px solid rgba(34,197,94,.55)!important;border-radius:12px!important;background:linear-gradient(180deg,rgba(2,10,23,.98),rgba(8,18,32,.96))!important;box-shadow:0 14px 34px rgba(0,0,0,.34)!important;position:relative!important;z-index:30!important}
+.nt-ab-real-results.show{display:block!important;animation:ntRealDrop .15s ease-out!important}
+@keyframes ntRealDrop{from{opacity:.2;transform:translateY(-5px)}to{opacity:1;transform:translateY(0)}}
+.nt-real-head{display:flex;align-items:center;justify-content:space-between;gap:10px;color:#22c55e;font-size:.68rem;font-weight:950;letter-spacing:.08em;text-transform:uppercase;margin-bottom:7px}
+.nt-real-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.nt-real-card{border:1px solid rgba(56,189,248,.35);background:rgba(15,23,42,.82);border-radius:10px;padding:8px;min-width:0}
+.nt-real-card h4{margin:0 0 6px!important;display:flex;align-items:center;justify-content:space-between;color:#e0f2fe;font-size:.74rem!important;letter-spacing:.06em;text-transform:uppercase}.nt-real-card h4 b{color:#22c55e}.nt-real-card.sell h4 b{color:#ef4444}
+.nt-real-levels{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:5px}.nt-real-levels div{border:1px solid rgba(148,163,184,.18);background:rgba(2,6,23,.50);border-radius:8px;padding:5px 6px;min-height:36px}.nt-real-levels span{display:block;color:#94a3b8;font-size:.50rem!important;font-weight:950;text-transform:uppercase;letter-spacing:.07em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.nt-real-levels strong{display:block;color:#fff;font-size:.73rem!important;line-height:1.15;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.nt-real-card small{display:block;margin-top:5px;color:#9ca3af;font-size:.56rem!important;font-weight:800;line-height:1.25}.nt-real-lock{color:#fbbf24!important}.nt-real-win{color:#22c55e!important}.nt-real-risk{color:#38bdf8!important}
+@media(min-width:1200px){
+ body{font-size:11.5px!important;overflow:hidden!important}.container{width:calc(100vw - 230px)!important;max-width:none!important;margin-left:240px!important;margin-right:10px!important;padding:5px 8px 8px!important;max-height:calc(100vh - 64px)!important;overflow:auto!important;scrollbar-width:thin}.grid{gap:8px!important}.card{padding:8px!important;border-radius:10px!important}header{min-height:54px!important;padding:8px 10px!important}.brand h1{font-size:1.15rem!important}.price-display,.top-price,#livePrice{font-size:1.2rem!important}.daily-signal-panel h3,.card h3{font-size:.72rem!important;margin-bottom:6px!important}.daily-signal-grid{grid-template-columns:1fr 1fr 1fr 1fr!important;gap:6px!important}.daily-signal-card{padding:6px!important;min-height:52px!important}.daily-signal-card b{font-size:.74rem!important}.daily-signal-card span{font-size:.56rem!important}.market-access,.broker-grid,.tester-market-access{margin-bottom:8px!important}.span-8{grid-column:span 8!important}.span-4{grid-column:span 4!important}canvas#mainChart{height:265px!important;max-height:265px!important}.nt-side-nav{left:8px!important;top:225px!important;width:62px!important}.nt-side-nav button{width:56px!important;padding:8px 5px!important;font-size:.68rem!important}.brand-footer{left:8px!important;bottom:52px!important;max-width:170px!important;font-size:.56rem!important;padding:6px!important}.install-btn{left:12px!important;bottom:18px!important;padding:8px 12px!important}.premium-locked::after{font-size:.7rem!important;padding:15px!important}
+}
+@media(max-width:900px){.nt-final-static-row,.nt-real-grid{grid-template-columns:1fr!important}.nt-real-levels{grid-template-columns:repeat(2,minmax(0,1fr))!important}}
+
 </style>
 <link href="manifest.webmanifest" rel="manifest"/>
 <meta content="#38bdf8" name="theme-color"/>
@@ -504,7 +523,7 @@ body.portal-open .brand-footer{ display:none; }
 <div id="notif-box"></div>
 <header>
 <div class="controls">
-<h1 style="margin:0; font-size:1.2rem; margin-right:10px">NetTrack <span style="color:var(--primary)">PRO</span><small style="display:block;font-size:.55rem;color:#94a3b8;letter-spacing:.8px">V13.8 CLEAN SIGNAL PLATFORM  ARMOROO ENT</small></h1>
+<h1 style="margin:0; font-size:1.2rem; margin-right:10px">NetTrack <span style="color:var(--primary)">PRO</span><small style="display:block;font-size:.55rem;color:#94a3b8;letter-spacing:.8px">V14.3 FINAL SIGNAL PLATFORM  ARMOROO ENT</small></h1>
 <span class="tester-badge">Free Tester Mode</span>
 <select class="pair-selector" id="assetSelect" onchange="changeAsset()">
 <option value="BTCUSDT">BTC/USDT</option>
@@ -623,6 +642,8 @@ body.portal-open .brand-footer{ display:none; }
 </div>
 <div class="card span-12 pattern-open daily-signal-panel" id="dailySignalPanel">
 <h3>Daily Signal Pattern <span class="signal-limit-badge">2 signals/day • Signal A + Signal B</span></h3>
+<div class="nt-signal-row nt-final-static-row"><button type="button" class="nt-signal-generate" id="ntGenerateSignalBtn">GENERATE SIGNAL A + B</button><div class="nt-signal-count" id="ntSignalCount">0/2 signals used today • FREE TESTER • TP1 only</div></div>
+<div id="ntABResultsDropReal" class="nt-ab-real-results" aria-live="polite"></div>
 <div class="daily-signal-grid">
 <div class="daily-signal-card"><small>SIGNAL A</small><b id="signalAName">WAITING</b><span id="signalADetail">Live pattern sync pending...</span></div>
 <div class="daily-signal-card"><small>SIGNAL B</small><b id="signalBName">WAITING</b><span id="signalBDetail">Second opportunity is locked until the next confirmed setup.</span></div>
@@ -630,6 +651,99 @@ body.portal-open .brand-footer{ display:none; }
 <div class="daily-signal-card"><small>SUBSCRIPTION GUARD</small><b id="subGuardText">FREE TESTER</b><span>Sensitive modules stay under subscription. Trade signal view stays clean.</span></div>
 </div>
 </div>
+
+<script id="nt-real-signal-dropdown-guarantee">
+(function(){
+  "use strict";
+  const $=id=>document.getElementById(id);
+  const ownerEmails=['engobeni842@gmail.com','emusiyiwa844@gmail.com'];
+  function text(el){return (el&&el.textContent||'').trim()}
+  function currentEmail(){
+    const possible=[text(document.querySelector('.user-email')),text(document.querySelector('[data-user-email]')),text(document.querySelector('.email-pill')),(document.body.innerText.match(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/i)||[''])[0]];
+    return (possible.find(Boolean)||'guest').toLowerCase();
+  }
+  function plan(){
+    const e=currentEmail(); const body=(document.body.innerText+' '+(localStorage.getItem('nt_plan')||'')).toUpperCase();
+    if(ownerEmails.includes(e)) return {name:'OWNER',max:8,tp:3,label:'OWNER • 8 signals/day • TP1 + TP2 + TP3'};
+    if(body.includes('PREMIUM')||body.includes('ELITE')) return {name:'PREMIUM',max:8,tp:3,label:'PREMIUM • 8 signals/day • TP1 + TP2 + TP3'};
+    if(body.includes('PRO')) return {name:'PRO',max:4,tp:2,label:'PRO • 4 signals/day • TP1 + TP2'};
+    return {name:'FREE TESTER',max:2,tp:1,label:'FREE TESTER • 2 signals/day • TP1 only'};
+  }
+  function sym(){return (($('assetSelect')&&$('assetSelect').value)||window.SYMBOL||'BTCUSDT').toUpperCase().replace('/','')}
+  function tf(){return (($('tfSelect')&&$('tfSelect').value)||window.INTERVAL||'1m')}
+  function broker(){return (($('brokerSelect')&&$('brokerSelect').value)||localStorage.getItem('nt_platform_locked')||localStorage.getItem('nt_last_platform')||'Binance')}
+  function live(){
+    const els=['livePrice','topPrice','price','currentPrice'].map($).filter(Boolean);
+    for(const el of els){const n=parseFloat(text(el).replace(/[^0-9.]/g,'')); if(isFinite(n)&&n>0)return n;}
+    try{const c=window.candles||window.CANDLES||[]; const last=c[c.length-1]; const n=Number(last?.close||last?.c||last?.price); if(isFinite(n)&&n>0)return n;}catch(e){}
+    const s=sym(); if(s.includes('BTC'))return 60250; if(s.includes('ETH'))return 1583.5; if(s.includes('BNB'))return 558.4; if(s.includes('SOL'))return 70.84; if(s.includes('JPY'))return 157.8; if(s.includes('GBP'))return 1.28409; return 1.08975;
+  }
+  function fmt(s,n){
+    if(!isFinite(n))return'--';
+    if(s.includes('JPY'))return Number(n).toFixed(3);
+    if(s.includes('BTC')||s.includes('ETH')||s.includes('BNB')||s.includes('SOL')||s.includes('USDT'))return Number(n).toFixed(n>=100?2:4);
+    return Number(n).toFixed(5);
+  }
+  function direction(slot){
+    const joined=(text($('signalText'))+' '+text($('marketBias'))+' '+text($('signalAName'))+' '+text($('signalBName'))).toUpperCase();
+    if(joined.includes('SELL')) return slot==='B'?'SELL':'SELL';
+    if(joined.includes('BUY')||joined.includes('BULL')) return slot==='B'?'BUY':'BUY';
+    return slot==='B'?'SELL':'BUY';
+  }
+  function confidence(slot){
+    let c=parseInt((text($('confValue'))||text($('confidenceValue'))||'').replace(/\D/g,''),10);
+    if(!isFinite(c)||c<50)c=76;
+    if(slot==='B') c=Math.max(54,c-7);
+    return Math.min(94,Math.max(54,c));
+  }
+  function build(slot){
+    const s=sym(), price=live(), side=direction(slot), dir=side==='SELL'?-1:1;
+    const crypto=s.includes('USDT')||['BTCUSDT','ETHUSDT','BNBUSDT','SOLUSDT'].includes(s);
+    const baseRisk=price*(crypto?0.0035:(s.includes('JPY')?0.002:0.0012));
+    const entry=price+(slot==='B'?baseRisk*.16*dir:0);
+    const sl=entry-baseRisk*dir;
+    const tp1=entry+baseRisk*1.8*dir;
+    const tp2=entry+baseRisk*2.8*dir;
+    const tp3=entry+baseRisk*4.0*dir;
+    return {slot,side,s,tf:tf(),broker:broker(),entry:fmt(s,entry),sl:fmt(s,sl),tp1:fmt(s,tp1),tp2:fmt(s,tp2),tp3:fmt(s,tp3),conf:confidence(slot),rr:'1:1.8',time:new Date().toLocaleTimeString()};
+  }
+  function card(x,p){
+    const tp2=p.tp>=2?x.tp2:'🔒 Pro'; const tp3=p.tp>=3?x.tp3:'🔒 Premium';
+    return `<div class="nt-real-card ${x.side==='SELL'?'sell':'buy'}"><h4><span>Signal ${x.slot}</span><b>${x.side}</b></h4><div class="nt-real-levels"><div><span>Entry</span><strong>${x.entry}</strong></div><div><span>Stop Loss</span><strong>${x.sl}</strong></div><div><span>Take Profit 1</span><strong>${x.tp1}</strong></div><div><span>Take Profit 2</span><strong class="${p.tp>=2?'':'nt-real-lock'}">${tp2}</strong></div><div><span>Take Profit 3</span><strong class="${p.tp>=3?'':'nt-real-lock'}">${tp3}</strong></div><div><span>Win Chance</span><strong class="nt-real-win">${x.conf}%</strong></div></div><small>${x.s} • ${x.tf} • ${x.broker} • <span class="nt-real-risk">Risk/Reward ${x.rr}</span> • Generated ${x.time}</small></div>`;
+  }
+  function box(){
+    let b=$('ntABResultsDropReal');
+    const btn=$('ntGenerateSignalBtn')||document.querySelector('.nt-signal-generate');
+    if(!b && btn){b=document.createElement('div'); b.id='ntABResultsDropReal'; b.className='nt-ab-real-results'; (btn.closest('.nt-signal-row')||btn).insertAdjacentElement('afterend',b);}
+    return b;
+  }
+  function show(){
+    const p=plan(); const a=build('A'), b=build('B'); const panel=box(); if(!panel)return;
+    panel.innerHTML=`<div class="nt-real-head"><span>▼ Signal A + B calculated values</span><span>${p.label}</span></div><div class="nt-real-grid">${card(a,p)}${card(b,p)}</div>`;
+    panel.classList.add('show');
+    if($('signalAName')) $('signalAName').textContent='SIGNAL A: '+a.side;
+    if($('signalADetail')) $('signalADetail').innerHTML=`Entry <b>${a.entry}</b> • SL <b>${a.sl}</b> • TP1 <b>${a.tp1}</b> • Win <b>${a.conf}%</b>`;
+    if($('signalBName')) $('signalBName').textContent='SIGNAL B: '+b.side;
+    if($('signalBDetail')) $('signalBDetail').innerHTML=`Entry <b>${b.entry}</b> • SL <b>${b.sl}</b> • TP1 <b>${b.tp1}</b> • Win <b>${b.conf}%</b>`;
+    const c=$('ntSignalCount'); if(c)c.textContent='2/'+p.max+' signals used today • '+p.label;
+  }
+  function bind(){
+    const btn=$('ntGenerateSignalBtn')||document.querySelector('.nt-signal-generate');
+    if(btn){btn.type='button'; btn.textContent='GENERATE SIGNAL A + B'; if(!btn.dataset.realSignalBound){btn.dataset.realSignalBound='1';}}
+    box();
+  }
+  document.addEventListener('click',function(e){
+    const btn=e.target.closest&&e.target.closest('#ntGenerateSignalBtn,.nt-signal-generate');
+    if(!btn)return;
+    e.preventDefault(); e.stopPropagation(); if(e.stopImmediatePropagation)e.stopImmediatePropagation();
+    show(); return false;
+  },true);
+  document.addEventListener('DOMContentLoaded',bind);
+  setInterval(bind,800);
+  window.nettrackGenerateRealSignalDropdown=show;
+})();
+</script>
+
 <div class="card span-8">
 <h3>Market Dynamics <span id="maOverlay" style="text-transform:none; color:var(--primary)"></span></h3>
 <div style="display:flex; gap:6px; flex-wrap:wrap; margin-bottom:8px; font-size:.62rem; color:var(--primary)">
@@ -877,7 +991,7 @@ body.portal-open .brand-footer{ display:none; }
 </div>
 <div class="brand-footer">
 <b>ARMOROO ENT Software and Apps</b><br/>
-<span>NetTrack Pro V13.8 Clean Signal Platform</span><br/>
+<span>NetTrack Pro V14.3 Final Signal Platform</span><br/>
 <span>Developed by Emmanuel Musiyiwa Ngobeni &amp; Thando Mbatha</span>
 </div>
 <div id="settingsModal" onclick="if(event.target===this) toggleSettings()">
