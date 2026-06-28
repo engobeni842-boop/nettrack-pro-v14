@@ -5512,5 +5512,109 @@ body{
 </script>
 <!-- /NETTRACK PRO V14 FINAL SIGNAL DROPDOWN + COMPACT DESKTOP + OWNER SIDEBAR PATCH -->
 
+
+
+<!-- NETTRACK PRO V14.1 FINAL UI + SIGNAL RESULTS PATCH -->
+<style id="nt-v141-final-visible-results-css">
+:root{--nt-sidebar-w:92px;}
+body{overflow-x:hidden!important;}
+.container{max-width:1240px!important;margin:0 auto!important;padding-left:104px!important;padding-right:10px!important;}
+header{min-height:58px!important;padding:8px 10px!important;gap:8px!important;}
+header h1{font-size:1.05rem!important;line-height:.95!important;min-width:86px!important;}
+header h1 small{font-size:.48rem!important;line-height:1.05!important;letter-spacing:.55px!important;}
+select,button,input{min-height:34px!important;font-size:.74rem!important;}
+.card{padding:9px!important;margin-bottom:8px!important;border-radius:10px!important;}
+.grid{gap:8px!important;}
+.card h3{font-size:.74rem!important;margin-bottom:7px!important;letter-spacing:.9px!important;}
+.nt-side-nav{position:fixed!important;left:8px!important;top:178px!important;width:68px!important;z-index:40000!important;display:flex!important;flex-direction:column!important;gap:8px!important;background:linear-gradient(180deg,rgba(2,6,23,.74),rgba(15,23,42,.55))!important;padding:7px!important;border-radius:16px!important;border:1px solid rgba(56,189,248,.32)!important;box-shadow:0 20px 40px rgba(0,0,0,.25)!important;backdrop-filter:blur(8px)!important;}
+.nt-side-nav button{width:100%!important;border:1px solid rgba(56,189,248,.5)!important;background:#0f172a!important;color:#dbeafe!important;border-radius:11px!important;padding:10px 5px!important;font-size:.68rem!important;font-weight:1000!important;letter-spacing:.7px!important;text-align:center!important;cursor:pointer!important;}
+.nt-side-nav button.active,.nt-side-nav button:hover{background:#38bdf8!important;color:#02111f!important;}
+.nt-side-nav #navOwner{display:none!important;}
+body.nt-owner-mode .nt-side-nav #navOwner{display:block!important;}
+.daily-signal-panel{padding:9px!important;}
+.daily-signal-panel h3{margin:0 0 7px!important;}
+.nt-signal-row{display:grid!important;grid-template-columns:minmax(0,1.25fr) minmax(260px,.75fr)!important;gap:7px!important;margin:4px 0 7px!important;}
+.nt-signal-generate,#ntGenerateSignalBtn{display:block!important;width:100%!important;border:0!important;border-radius:10px!important;padding:10px 14px!important;background:linear-gradient(135deg,#22c55e,#06b6d4)!important;color:#02111f!important;font-size:.78rem!important;font-weight:1000!important;letter-spacing:.8px!important;cursor:pointer!important;box-shadow:0 12px 22px rgba(14,165,233,.18)!important;}
+.nt-signal-count{display:flex!important;align-items:center!important;justify-content:center!important;border:1px solid rgba(34,197,94,.36)!important;background:rgba(34,197,94,.08)!important;color:#bbf7d0!important;border-radius:10px!important;font-size:.68rem!important;font-weight:900!important;text-align:center!important;padding:8px!important;}
+.daily-signal-grid{display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:7px!important;}
+.daily-signal-card{padding:8px!important;min-height:58px!important;border-radius:9px!important;overflow:hidden!important;}
+.daily-signal-card small{font-size:.56rem!important;letter-spacing:.65px!important;}
+.daily-signal-card b{font-size:.78rem!important;line-height:1.05!important;display:block!important;margin:2px 0!important;}
+.daily-signal-card span{font-size:.60rem!important;line-height:1.25!important;display:block!important;}
+#ntSignalResultsPanel{display:none!important;width:100%!important;margin:6px 0 7px!important;border:1px solid rgba(56,189,248,.55)!important;border-radius:12px!important;background:linear-gradient(135deg,rgba(2,6,23,.98),rgba(7,24,44,.98))!important;box-shadow:0 16px 36px rgba(0,0,0,.38),0 0 0 1px rgba(34,197,94,.12)!important;padding:8px!important;position:relative!important;z-index:10!important;}
+#ntSignalResultsPanel.nt-open,#ntSignalResultsPanel.show{display:block!important;animation:ntDropVisible .18s ease-out!important;}
+@keyframes ntDropVisible{from{opacity:0;transform:translateY(-5px)}to{opacity:1;transform:translateY(0)}}
+.nt-results-head{display:flex!important;align-items:center!important;justify-content:space-between!important;gap:8px!important;margin-bottom:7px!important;padding-bottom:6px!important;border-bottom:1px solid rgba(148,163,184,.16)!important;font-size:.68rem!important;text-transform:uppercase!important;letter-spacing:.7px!important;color:#7dd3fc!important;font-weight:1000!important;}
+.nt-results-grid{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:8px!important;}
+.nt-result-card{border:1px solid rgba(148,163,184,.18)!important;background:rgba(15,23,42,.88)!important;border-radius:11px!important;padding:8px!important;min-width:0!important;}
+.nt-result-title{display:flex!important;align-items:center!important;justify-content:space-between!important;gap:6px!important;margin-bottom:7px!important;}
+.nt-result-title b{color:#38bdf8!important;font-size:.78rem!important;font-weight:1000!important;}
+.nt-result-title span{font-size:.58rem!important;color:#94a3b8!important;font-weight:850!important;}
+.nt-result-table{display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:5px!important;}
+.nt-metric{background:rgba(2,6,23,.66)!important;border:1px solid rgba(148,163,184,.13)!important;border-radius:8px!important;padding:5px 6px!important;min-height:38px!important;}
+.nt-metric small{display:block!important;color:#94a3b8!important;font-size:.49rem!important;letter-spacing:.45px!important;text-transform:uppercase!important;font-weight:950!important;}
+.nt-metric strong{display:block!important;font-size:.73rem!important;line-height:1.05!important;margin-top:2px!important;color:#e0f2fe!important;word-break:break-word!important;}
+.nt-metric.good strong{color:#22c55e!important}.nt-metric.danger strong{color:#fb7185!important}.nt-metric.gold strong{color:#facc15!important}.nt-metric.locked strong{color:#eab308!important}
+.nt-copy-signal{width:100%!important;margin-top:6px!important;border:0!important;border-radius:8px!important;background:linear-gradient(135deg,#22c55e,#0ea5e9)!important;color:#02111f!important;font-weight:1000!important;font-size:.63rem!important;padding:6px!important;cursor:pointer!important;}
+.brand-footer{position:static!important;margin:8px auto 4px!important;max-width:760px!important;text-align:center!important;background:rgba(2,6,23,.42)!important;border:1px solid rgba(56,189,248,.18)!important;border-radius:12px!important;padding:8px 12px!important;color:#94a3b8!important;font-size:.64rem!important;line-height:1.35!important;}
+.brand-footer b{color:#38bdf8!important;font-size:.72rem!important;letter-spacing:.65px!important;}
+#chart,#chartCanvas,.chart-wrap,.market-chart,canvas[id*="chart"]{max-height:280px!important;}
+.card.span-8,.card.span-4{min-height:0!important;}
+@media (min-width:1100px){.container{transform:scale(.94);transform-origin:top center;width:106.4%;margin-left:calc(50% - 53.2%)!important}.nt-side-nav{transform:scale(.94);transform-origin:left top}.brand-footer{transform:scale(.94);transform-origin:top center}}
+@media (max-width:900px){.container{padding-left:82px!important}.nt-signal-row,.nt-results-grid,.daily-signal-grid{grid-template-columns:1fr!important}.nt-result-table{grid-template-columns:repeat(2,minmax(0,1fr))!important}.nt-side-nav{top:158px!important}}
+</style>
+<script id="nt-v141-final-visible-results-js">
+(function(){
+  const OWNER_EMAILS=['engobeni842@gmail.com','emusiyiwa844@gmail.com','emmanuelngobeni@gmail.com'];
+  const $=id=>document.getElementById(id);
+  const qa=(s,r=document)=>Array.from(r.querySelectorAll(s));
+  const PLATFORMS=['Binance','Bybit','Exness','IQ Option','TradingView','MetaTrader 5','MetaTrader 4','XM','Deriv','ICMarkets','IQXness','Quotex','Pocket Option','OctaFX','RoboForex','TradeView','HFM','FBS'];
+  function email(){return (localStorage.getItem('nt_current_email')||localStorage.getItem('nt_last_signup_email')||($('userEmail')&&$('userEmail').textContent)||document.body.innerText.match(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/i)?.[0]||'').trim().toLowerCase()}
+  function isOwner(){return OWNER_EMAILS.includes(email())}
+  function toast(msg,sub){try{document.querySelectorAll('.nt-toast').forEach(x=>x.remove());const d=document.createElement('div');d.className='nt-toast';d.innerHTML=String(msg)+(sub?'<small>'+String(sub)+'</small>':'');document.body.appendChild(d);setTimeout(()=>d.remove(),3600)}catch(e){console.log(msg,sub)}}
+  function setVersionFooter(){
+    const small=document.querySelector('header h1 small'); if(small) small.textContent='V14.1 FINAL SIGNAL PLATFORM  ARMOROO ENT';
+    document.body.classList.toggle('nt-owner-mode',isOwner());
+    const owner=$('navOwner'); if(owner) owner.style.display=isOwner()?'block':'none';
+    let footer=document.querySelector('.brand-footer'); if(!footer){footer=document.createElement('div');footer.className='brand-footer';document.body.appendChild(footer)}
+    footer.innerHTML='<b>ARMOROO ENT Software and Apps</b><br><span>Innovation • Technology • Solutions</span><br><span>NetTrack Pro V14.1 Final Signal Platform — Created by Emmanuel Musiyiwa Ngobeni &amp; Thando Mbatha</span>';
+  }
+  function norm(v){const m={'MetaTrader 5':'MT5','MetaTrader 4':'MT4','IQ Option':'IQ Option','TradingView':'TradingView'};return m[v]||v||'Binance'}
+  function ensurePlatforms(){
+    const broker=$('brokerSelect'); if(!broker) return;
+    PLATFORMS.forEach(p=>{const val=norm(p); if(!qa('option',broker).some(o=>o.value===val||o.textContent===p)){const o=document.createElement('option'); o.value=val; o.textContent=p; broker.appendChild(o)}});
+    const saved=localStorage.getItem('nt_v141_platform'); if(saved && broker.value!==saved){broker.value=saved}
+    if(broker.dataset.v141!=='yes'){
+      broker.dataset.v141='yes';
+      broker.addEventListener('change',function(e){localStorage.setItem('nt_v141_platform',broker.value); setTimeout(()=>{broker.value=localStorage.getItem('nt_v141_platform')||broker.value; updatePlatformLabels();},0); toast('Platform switched','Active platform: '+broker.options[broker.selectedIndex]?.textContent||broker.value)},true);
+    }
+  }
+  function sym(){return $('assetSelect')?.value || window.SYMBOL || 'BTCUSDT'}
+  function tf(){return $('tfSelect')?.value || window.INTERVAL || '1m'}
+  function broker(){return $('brokerSelect')?.options[$('brokerSelect')?.selectedIndex]?.textContent || $('brokerSelect')?.value || 'Binance'}
+  function decimals(s){if(['EURUSD','GBPUSD'].includes(s))return 5;if(s==='USDJPY')return 3;if(s==='XAUUSD')return 2;return 2}
+  function fmt(s,n){n=Number(n);return Number.isFinite(n)?n.toFixed(decimals(s)):'--'}
+  function price(){const raw=($('livePrice')?.textContent||'').replace(/[^0-9.]/g,'');const p=parseFloat(raw);if(Number.isFinite(p)&&p>0)return p;const c=window.candles;if(Array.isArray(c)&&c.length)return +c[c.length-1].close||100;return ({BTCUSDT:60250,ETHUSDT:3420,SOLUSDT:70,BNBUSDT:558,EURUSD:1.09250,GBPUSD:1.28410,USDJPY:159.20,XAUUSD:2320}[sym()]||100)}
+  function plan(){if(isOwner())return 'OWNER';const t=(document.body.innerText||'').toUpperCase(); if(t.includes('PREMIUM'))return 'PREMIUM'; if(t.includes('PRO PLAN')||t.includes(' PRO '))return 'PRO'; return 'FREE'}
+  function maxSignals(){const p=plan(); return p==='OWNER'||p==='PREMIUM'?8:(p==='PRO'?4:2)}
+  function quotaKey(){return 'nt_v141_signal_quota_'+email()+'_'+new Date().toISOString().slice(0,10)}
+  function used(){return +(localStorage.getItem(quotaKey())||'0')||0}
+  function canTP2(x){return ['PRO','PREMIUM','OWNER'].includes(x.plan)} function canTP3(x){return ['PREMIUM','OWNER'].includes(x.plan)}
+  function side(slot){const t=($('signalText')?.textContent||'').toUpperCase(); if(t.includes('SELL'))return slot==='A'?'SELL':'RETEST SELL'; if(t.includes('BUY'))return slot==='A'?'BUY':'PULLBACK BUY'; return slot==='A'?'BUY':'RETEST SELL'}
+  function buildSignal(slot){const s=sym(), p=price(), sideName=side(slot), sell=sideName.includes('SELL'), d=decimals(s), pl=plan(); const risk=Math.max(p*(s.includes('USDT')?0.0026:(s==='USDJPY'?0.0010:0.0008)),s.includes('USDT')?0.08:0.00009); const entry=p+(slot==='B'?(sell?risk*.18:-risk*.18):0); const sl=sell?entry+risk:entry-risk; const tp1=sell?entry-risk*1.55:entry+risk*1.55; const tp2=sell?entry-risk*2.25:entry+risk*2.25; const tp3=sell?entry-risk*3.10:entry+risk*3.10; const engine=parseInt(($('confValue')?.textContent||'0').replace(/\D/g,''),10)||0; const conf=Math.min(94,Math.max(45, engine || Math.round(62+Math.random()*22))); const win=Math.min(96,Math.max(51,conf+(slot==='A'?8:3)+Math.floor(Math.random()*4))); return {slot,side:sideName,sym:s,tf:tf(),broker:broker(),plan:pl,entry:fmt(s,entry),sl:fmt(s,sl),tp1:fmt(s,tp1),tp2:fmt(s,tp2),tp3:fmt(s,tp3),conf,win,rr:slot==='A'?'1 : 2.4':'1 : 1.8',time:new Date().toLocaleTimeString()}}
+  function card(x){const tp2=canTP2(x)?x.tp2:'🔒 Pro';const tp3=canTP3(x)?x.tp3:'🔒 Premium';return `<div class="nt-result-card"><div class="nt-result-title"><b>SIGNAL ${x.slot} — ${x.side}</b><span>${x.broker} • ${x.sym} • ${x.tf}</span></div><div class="nt-result-table"><div class="nt-metric good"><small>Entry</small><strong>${x.entry}</strong></div><div class="nt-metric danger"><small>Stop Loss</small><strong>${x.sl}</strong></div><div class="nt-metric gold"><small>Take Profit 1</small><strong>${x.tp1}</strong></div><div class="nt-metric ${canTP2(x)?'gold':'locked'}"><small>Take Profit 2</small><strong>${tp2}</strong></div><div class="nt-metric ${canTP3(x)?'gold':'locked'}"><small>Take Profit 3</small><strong>${tp3}</strong></div><div class="nt-metric"><small>Confidence</small><strong>${x.conf}%</strong></div><div class="nt-metric good"><small>Win Chance</small><strong>${x.win}%</strong></div><div class="nt-metric"><small>Risk / Reward</small><strong>${x.rr}</strong></div></div><button type="button" class="nt-copy-signal" data-copy="SIGNAL ${x.slot} ${x.side} | ${x.broker} ${x.sym} ${x.tf} | Entry ${x.entry} | SL ${x.sl} | TP1 ${x.tp1} | TP2 ${tp2} | TP3 ${tp3} | Confidence ${x.conf}% | Win Chance ${x.win}%">COPY SIGNAL ${x.slot}</button></div>`}
+  function ensurePanel(){const p=$('dailySignalPanel'); if(!p) return null; let box=$('ntSignalResultsPanel'); if(!box){box=document.createElement('div');box.id='ntSignalResultsPanel';box.innerHTML='<div class="nt-results-head"><span>▼ Signal A+B Results</span><span id="ntResultsMeta">Waiting</span></div><div class="nt-results-grid" id="ntResultsGrid"></div>'; const row=$('ntGenerateSignalBtn')?.closest('.nt-signal-row')||p.querySelector('.nt-signal-row')||p.querySelector('h3'); row.insertAdjacentElement(row.classList?.contains('nt-signal-row')?'afterend':'afterend',box); box.addEventListener('click',e=>{const b=e.target.closest('.nt-copy-signal');if(!b)return;navigator.clipboard?.writeText(b.dataset.copy||'');toast('Signal copied','Paste it into your journal or broker notes.');});} return box}
+  function updateCount(){const c=$('ntSignalCount'); if(c)c.textContent=`${used()}/${maxSignals()} signals used today • ${plan()} • TP1${['PRO','PREMIUM','OWNER'].includes(plan())?' + TP2':''}${['PREMIUM','OWNER'].includes(plan())?' + TP3':''}`}
+  function generate(){const u=used(), m=maxSignals(); if(u>=m){ensurePanel()?.classList.add('nt-open');toast('Daily signal limit reached',`${u}/${m} used today. Subscribe for more signals.`);return false} const a=buildSignal('A'), b=buildSignal('B'); localStorage.setItem(quotaKey(),String(Math.min(m,u+2))); const box=ensurePanel(); if(box){$('ntResultsGrid').innerHTML=card(a)+card(b);$('ntResultsMeta').textContent=`${a.broker} • ${a.sym} • ${a.tf} • ${a.time}`;box.classList.add('nt-open','show')} if($('signalAName'))$('signalAName').textContent=`${a.side} • CONFIRMED`; if($('signalADetail'))$('signalADetail').innerHTML=`Entry <b>${a.entry}</b> • SL <b>${a.sl}</b> • TP1 <b>${a.tp1}</b> • Win <b>${a.win}%</b>`; if($('signalBName'))$('signalBName').textContent=`${b.side}`; if($('signalBDetail'))$('signalBDetail').innerHTML=`Entry <b>${b.entry}</b> • SL <b>${b.sl}</b> • TP1 <b>${b.tp1}</b> • Win <b>${b.win}%</b>`; updateCount(); toast('Signal A + B generated','Entry, Stop Loss, TP and Win Chance opened below.'); return false}
+  function hookButton(){let btn=$('ntGenerateSignalBtn')||document.querySelector('.nt-signal-generate'); if(btn){btn.id='ntGenerateSignalBtn'; btn.onclick=function(e){e&&e.preventDefault&&e.preventDefault();return generate()}; if(btn.dataset.v141!=='yes'){btn.dataset.v141='yes';btn.addEventListener('click',function(e){e.preventDefault();e.stopImmediatePropagation();generate();},true)}} ensurePanel(); updateCount()}
+  window.ntGenerateSignalSwitch=generate; window.generateSignal=generate; window.generateFinalSignals=generate; window.updatePlatformLabels=window.updatePlatformLabels||function(){ if($('patternPlatform'))$('patternPlatform').textContent=broker()+' • '+sym()+' • '+tf(); if($('patternSync'))$('patternSync').textContent='Live signal generator is linked to selected platform, symbol and timeframe.'; };
+  function boot(){setVersionFooter();ensurePlatforms();hookButton();try{window.updatePlatformLabels()}catch(e){}}
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot); else boot();
+  new MutationObserver(()=>boot()).observe(document.documentElement,{childList:true,subtree:true});
+  setInterval(boot,1200);
+})();
+</script>
+<!-- /NETTRACK PRO V14.1 FINAL UI + SIGNAL RESULTS PATCH -->
+
 </body>
 </html>
