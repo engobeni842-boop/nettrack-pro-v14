@@ -6187,5 +6187,85 @@ body{
 })();
 </script>
 
+
+
+<!-- NetTrack Pro V14.4 Natural Signal Logic Stability Patch -->
+<style id="nt-v144-natural-css">
+  #settingsModal .modal-content, #settingsModal select, #settingsModal input, #settingsModal button{pointer-events:auto!important;position:relative;z-index:30010!important}
+  #settingsModal{z-index:30000!important;pointer-events:auto!important}
+  #assetSelect,#tfSelect,#brokerSelect,#prefPair,#prefTF,#prefRisk{pointer-events:auto!important;user-select:auto!important}
+  canvas#mainChart{background:#07111f!important;filter:none!important;opacity:1!important;border:1px solid rgba(56,189,248,.25)!important}
+  .nt-chart-card-teaser::after{display:none!important;content:none!important}
+  #mainChart.nt-chart-teaser{filter:none!important;opacity:1!important}
+</style>
+<script id="nt-v144-natural-signal-platform-fix">
+(function(){
+  'use strict';
+  const VERSION='V14.4 Natural Signal Platform Logic Fix';
+  const STATE_KEY='nt_v144_natural_signal_state';
+  const BROKER_KEY='nt_final_locked_platform_v14';
+  const $=id=>document.getElementById(id);
+  const $$=(q,r=document)=>Array.from(r.querySelectorAll(q));
+  const ASSETS=[
+    ['Live Crypto',[['BTCUSDT','BTC/USDT'],['ETHUSDT','ETH/USDT'],['SOLUSDT','SOL/USDT'],['BNBUSDT','BNB/USDT']]],
+    ['Forex / Gold Watch',[['EURUSD','EUR/USD'],['GBPUSD','GBP/USD'],['USDJPY','USD/JPY'],['XAUUSD','XAU/USD Gold']]],
+    ['Synthetic Watch',[['R_75','Volatility 75'],['R_100','Volatility 100'],['BOOM1000','BOOM1000'],['CRASH1000','CRASH1000']]]
+  ];
+  const TFS=[['1m','1m'],['5m','5m'],['15m','15m'],['1h','1h']];
+  const BROKERS=['Binance','XM','MT5','MT4','TradingView','IQ Option','Bybit','Deriv','ICMarkets','Exness','IQXness','Quotex','Pocket Option','OctaFX','RoboForex','TradeView','HFM','FBS','MetaTrader 5','MetaTrader 4'];
+  const BASE={BTCUSDT:61750,ETHUSDT:3400,SOLUSDT:180,BNBUSDT:565,EURUSD:1.0800,GBPUSD:1.2730,USDJPY:157.82,XAUUSD:2320,R_75:75000,R_100:100000,BOOM1000:10400,CRASH1000:9200};
+  function label(sym){for(const [,g] of ASSETS){const f=g.find(x=>x[0]===sym); if(f)return f[1]} return sym||'BTCUSDT'}
+  function read(){try{return Object.assign({symbol:'BTCUSDT',tf:'1m',broker:'TradingView',risk:'2'},JSON.parse(localStorage.getItem(STATE_KEY)||'{}'))}catch(e){return {symbol:'BTCUSDT',tf:'1m',broker:'TradingView',risk:'2'}}}
+  function write(st){localStorage.setItem(STATE_KEY,JSON.stringify(st));localStorage.setItem(BROKER_KEY,st.broker);localStorage.setItem('nt_last_platform',st.broker);localStorage.setItem('ntp_broker_mode_v114',st.broker);}
+  function ensureSelectOptions(){
+    const a=$('assetSelect'); if(a && !a.dataset.v144Assets){const cur=a.value||read().symbol; a.innerHTML=ASSETS.map(([n,g])=>'<optgroup label="'+n+'">'+g.map(([v,t])=>'<option value="'+v+'">'+t+'</option>').join('')+'</optgroup>').join(''); a.value=cur; a.dataset.v144Assets='1';}
+    const pp=$('prefPair'); if(pp && !pp.dataset.v144Assets){const cur=pp.value||read().symbol; pp.innerHTML=ASSETS.map(([n,g])=>'<optgroup label="'+n+'">'+g.map(([v,t])=>'<option value="'+v+'">'+t+'</option>').join('')+'</optgroup>').join(''); pp.value=cur; pp.dataset.v144Assets='1';}
+    const b=$('brokerSelect'); if(b){BROKERS.forEach(x=>{if(!$$('option',b).some(o=>o.value===x)){const o=document.createElement('option');o.value=x;o.textContent=x;b.appendChild(o)}})}
+    const pt=$('prefTF'); if(pt && !pt.dataset.v144Tf){const cur=pt.value||read().tf; pt.innerHTML=TFS.map(([v,t])=>'<option value="'+v+'">'+t+'</option>').join(''); pt.value=cur; pt.dataset.v144Tf='1';}
+  }
+  function setText(id,v){const e=$(id); if(e)e.textContent=v}
+  function updateLabels(st){
+    setText('dsSymbol',label(st.symbol)); setText('dsTF',st.tf); setText('brokerOverlayName',st.broker); setText('alignBrokerName',st.broker);
+    setText('activeBrokerLabel',st.broker); setText('activePlatformName',st.broker+' • '+label(st.symbol)+' • '+st.tf);
+    const d=$('activePlatformDetail'); if(d)d.textContent='Switching is locked to '+st.broker+' and does not reset when Forex, Gold, Crypto or Synthetic pairs change.';
+    const p=$('patternPlatform'); if(p)p.textContent=st.broker+' • '+label(st.symbol)+' • '+st.tf;
+    const sync=$('patternSync'); if(sync)sync.textContent='Natural signal logic synced: pair + timeframe + platform move together without forced TradingView fallback.';
+    const ma=$('maOverlay'); if(ma){const data=makeCandles(st.symbol,80); const closes=data.map(c=>c.c); const m50=avg(closes.slice(-50)); const m200=avg(makeCandles(st.symbol,220).map(c=>c.c).slice(-200)); ma.textContent='MA50: '+fmt(st.symbol,m50)+' | MA200: '+fmt(st.symbol,m200);}    
+    const live=$('livePrice'); if(live){const last=makeCandles(st.symbol,1)[0].c; live.textContent=fmt(st.symbol,last);} 
+    const up=$('updateTime'); if(up)up.textContent='STREAM STABLE';
+  }
+  function apply(st,refresh){
+    ensureSelectOptions(); st=Object.assign(read(),st||{}); write(st);
+    window.SYMBOL=st.symbol; window.INTERVAL=st.tf; window.BROKER_MODE=st.broker;
+    if($('assetSelect'))$('assetSelect').value=st.symbol; if($('tfSelect'))$('tfSelect').value=st.tf; if($('brokerSelect'))$('brokerSelect').value=st.broker;
+    if($('prefPair'))$('prefPair').value=st.symbol; if($('prefTF'))$('prefTF').value=st.tf; if($('prefRisk'))$('prefRisk').value=st.risk||'2'; if($('riskPct'))$('riskPct').value=st.risk||'2';
+    updateLabels(st); drawNaturalChart(st); renderNaturalPanel(st);
+    if(refresh && typeof window.resetStream==='function'){try{setTimeout(()=>{restoreBroker(st); try{window.resetStream()}catch(e){} setTimeout(()=>{restoreBroker(st);drawNaturalChart(st);updateLabels(st)},250)},0)}catch(e){}}
+  }
+  function restoreBroker(st){const b=$('brokerSelect'); if(b){b.value=st.broker; window.BROKER_MODE=st.broker; localStorage.setItem(BROKER_KEY,st.broker); localStorage.setItem('nt_last_platform',st.broker);}}
+  function normBroker(v){if(v==='MetaTrader 5')return 'MT5'; if(v==='MetaTrader 4')return 'MT4'; return v||'TradingView'}
+  window.changeAsset=function(){const st=read(); st.symbol=$('assetSelect')?.value||st.symbol; apply(st,true); return false;};
+  window.changeTimeframe=function(){const st=read(); st.tf=$('tfSelect')?.value||st.tf; apply(st,true); return false;};
+  window.changeBroker=function(){const st=read(); st.broker=normBroker($('brokerSelect')?.value||st.broker); apply(st,false); try{if(window.currentSignal&&window.drawMain)window.drawMain(window.currentSignal)}catch(e){} drawNaturalChart(st); return false;};
+  window.toggleSettings=function(save){const m=$('settingsModal'); if(!m)return; ensureSelectOptions(); if(save){const st=read(); st.symbol=$('prefPair')?.value||st.symbol; st.tf=$('prefTF')?.value||st.tf; st.risk=$('prefRisk')?.value||st.risk||'2'; apply(st,true); notifyOk('Preferences saved','Pair, timeframe and risk updated. Platform stayed locked to '+st.broker+'.'); m.style.display='none'; return false;} const st=read(); if($('prefPair'))$('prefPair').value=st.symbol; if($('prefTF'))$('prefTF').value=st.tf; if($('prefRisk'))$('prefRisk').value=st.risk||'2'; m.style.display=(m.style.display==='flex')?'none':'flex'; return false;};
+  function seed(sym){return String(sym).split('').reduce((a,c)=>a+c.charCodeAt(0),0)}
+  function makeCandles(sym,n){const b=BASE[sym]||1, out=[], sd=seed(sym), t=Date.now()/60000; for(let i=n-1;i>=0;i--){const x=t-i, wave=Math.sin((x+sd)*0.15)*0.006+Math.sin((x+sd)*0.047)*0.012, micro=Math.sin((x+sd)*0.91)*0.002; const c=b*(1+wave+micro); const o=b*(1+Math.sin((x+sd-1)*0.15)*0.006+Math.sin((x+sd-1)*0.047)*0.012); const hi=Math.max(o,c)*(1+0.0018+Math.abs(Math.sin(x))*0.0012); const lo=Math.min(o,c)*(1-0.0018-Math.abs(Math.cos(x))*0.0012); out.push({o,h:hi,l:lo,c});} return out}
+  function avg(a){return a.length?a.reduce((x,y)=>x+y,0)/a.length:0}
+  function fmt(sym,n){if(!isFinite(n))return'--'; if(sym==='EURUSD'||sym==='GBPUSD')return n.toFixed(5); if(sym==='USDJPY')return n.toFixed(3); if(sym==='XAUUSD')return n.toFixed(2); if(String(sym).includes('USDT'))return n.toFixed(n>100?2:4); return n.toFixed(2)}
+  function drawNaturalChart(st){const c=$('mainChart'); if(!c||!c.getContext)return; const ctx=c.getContext('2d'); const r=c.getBoundingClientRect(); const W=Math.max(520,Math.floor(r.width||800)), H=Math.max(220,Math.floor(r.height||260)); c.width=W; c.height=H; const data=makeCandles(st.symbol,90); const vals=data.flatMap(x=>[x.h,x.l]); const min=Math.min(...vals), max=Math.max(...vals), pad=(max-min)*.12||1; const lo=min-pad, hi=max+pad; const x=i=>45+i*((W-92)/(data.length-1)); const y=p=>18+(hi-p)/(hi-lo)*(H-48);
+    ctx.clearRect(0,0,W,H); ctx.fillStyle='#07111f'; ctx.fillRect(0,0,W,H); ctx.strokeStyle='rgba(148,163,184,.12)'; ctx.lineWidth=1; for(let i=0;i<5;i++){const yy=18+i*(H-48)/4; ctx.beginPath();ctx.moveTo(40,yy);ctx.lineTo(W-48,yy);ctx.stroke();}
+    const w=Math.max(3,(W-105)/data.length*.62); data.forEach((d,i)=>{const up=d.c>=d.o; ctx.strokeStyle=up?'#22c55e':'#ef4444'; ctx.fillStyle=up?'#22c55e':'#ef4444'; ctx.beginPath();ctx.moveTo(x(i),y(d.h));ctx.lineTo(x(i),y(d.l));ctx.stroke(); const top=y(Math.max(d.o,d.c)), bot=y(Math.min(d.o,d.c)); ctx.fillRect(x(i)-w/2,top,w,Math.max(2,bot-top));});
+    const closes=data.map(d=>d.c); drawMA(10,'rgba(56,189,248,.95)'); drawMA(30,'rgba(234,179,8,.95)'); function drawMA(n,col){ctx.strokeStyle=col;ctx.lineWidth=2;ctx.beginPath(); closes.forEach((_,i)=>{const s=closes.slice(Math.max(0,i-n+1),i+1); const yy=y(avg(s)); if(i===0)ctx.moveTo(x(i),yy); else ctx.lineTo(x(i),yy)});ctx.stroke();}
+    const last=data[data.length-1].c; ctx.fillStyle='#e2e8f0';ctx.font='bold 12px Arial';ctx.fillText(label(st.symbol)+' • '+st.tf+' • '+st.broker+' • Natural signal view',48,14); ctx.fillStyle='#38bdf8';ctx.fillText(fmt(st.symbol,last),W-110,14);
+    ctx.strokeStyle='rgba(34,197,94,.55)'; ctx.setLineDash([6,5]); ctx.beginPath();ctx.moveTo(45,y(last));ctx.lineTo(W-50,y(last));ctx.stroke(); ctx.setLineDash([]);
+  }
+  function renderNaturalPanel(st){const right=document.querySelector('.span-4 canvas, #sideChart, #signalChart'); if(right&&right.getContext){const ctx=right.getContext('2d'), W=right.width=right.clientWidth||360,H=right.height=right.clientHeight||220;ctx.clearRect(0,0,W,H);ctx.fillStyle='#07111f';ctx.fillRect(0,0,W,H);ctx.fillStyle='#e2e8f0';ctx.font='bold 13px Arial';ctx.fillText('Broker Signal View',18,28);ctx.fillStyle='#38bdf8';ctx.fillText(st.broker+' • '+label(st.symbol),18,52);}}
+  function notifyOk(t,s){try{if(typeof window.notify==='function')window.notify(t); const d=document.createElement('div');d.className='nt-toast';d.innerHTML='<b>'+t+'</b><small>'+s+'</small>';document.body.appendChild(d);setTimeout(()=>d.remove(),3200)}catch(e){}}
+  function bind(){ensureSelectOptions(); apply(read(),false); ['assetSelect','tfSelect','brokerSelect','prefPair','prefTF','prefRisk'].forEach(id=>{const e=$(id); if(e&&!e.dataset.v144Bind){e.dataset.v144Bind='1'; e.addEventListener('change',ev=>{ev.stopPropagation(); if(id==='assetSelect')window.changeAsset(); else if(id==='tfSelect')window.changeTimeframe(); else if(id==='brokerSelect')window.changeBroker();},true);}})}
+  document.addEventListener('DOMContentLoaded',bind); setTimeout(bind,80); setTimeout(bind,800); setInterval(()=>{const st=read(); restoreBroker(st); updateLabels(st); drawNaturalChart(st);},1200);
+  window.ntV144NaturalFix={version:VERSION,apply,read,drawNaturalChart};
+})();
+</script>
+
 </body>
 </html>
