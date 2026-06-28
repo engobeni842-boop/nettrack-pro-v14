@@ -1,4 +1,4 @@
-const CACHE_NAME = 'nettrack-pro-pwa-v1';
+const CACHE_NAME = 'nettrack-natural-signal-platform-final-v14-2-clean-20260628';
 const ASSETS = [
   './',
   './index.html',
