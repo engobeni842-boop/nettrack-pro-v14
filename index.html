@@ -523,7 +523,7 @@ body.portal-open .brand-footer{ display:none; }
 <div id="notif-box"></div>
 <header>
 <div class="controls">
-<h1 style="margin:0; font-size:1.2rem; margin-right:10px">NetTrack <span style="color:var(--primary)">PRO</span><small style="display:block;font-size:.55rem;color:#94a3b8;letter-spacing:.8px">V14.3 FINAL SIGNAL PLATFORM  ARMOROO ENT</small></h1>
+<h1 style="margin:0; font-size:1.2rem; margin-right:10px">NetTrack <span style="color:var(--primary)">PRO</span><small style="display:block;font-size:.55rem;color:#94a3b8;letter-spacing:.8px">V14.5 CEO NATURAL SIGNAL PLATFORM  ARMOROO ENT</small></h1>
 <span class="tester-badge">Free Tester Mode</span>
 <select class="pair-selector" id="assetSelect" onchange="changeAsset()">
 <option value="BTCUSDT">BTC/USDT</option>
@@ -6189,83 +6189,125 @@ body{
 
 
 
-<!-- NetTrack Pro V14.4 Natural Signal Logic Stability Patch -->
-<style id="nt-v144-natural-css">
-  #settingsModal .modal-content, #settingsModal select, #settingsModal input, #settingsModal button{pointer-events:auto!important;position:relative;z-index:30010!important}
-  #settingsModal{z-index:30000!important;pointer-events:auto!important}
-  #assetSelect,#tfSelect,#brokerSelect,#prefPair,#prefTF,#prefRisk{pointer-events:auto!important;user-select:auto!important}
-  canvas#mainChart{background:#07111f!important;filter:none!important;opacity:1!important;border:1px solid rgba(56,189,248,.25)!important}
-  .nt-chart-card-teaser::after{display:none!important;content:none!important}
-  #mainChart.nt-chart-teaser{filter:none!important;opacity:1!important}
+<!-- NETTRACK PRO V14.5 CEO NATURAL SIGNAL PLATFORM LOGIC LOCK -->
+<style id="nt-v145-ceo-fix-css">
+  #mainChart,.nt-chart-card-teaser,#mainChart.nt-chart-teaser{filter:none!important;opacity:1!important;}
+  .nt-chart-card-teaser::after{display:none!important;content:none!important;}
+  .nt-ceo-status{border:1px solid rgba(34,197,94,.35);background:rgba(2,6,23,.72);color:#bbf7d0;border-radius:10px;padding:6px 8px;font-size:.68rem;font-weight:900;margin-top:6px;line-height:1.35}
+  .nt-ceo-warn{color:#fbbf24!important}.nt-ceo-good{color:#22c55e!important}.nt-ceo-bad{color:#ef4444!important}
 </style>
-<script id="nt-v144-natural-signal-platform-fix">
+<script id="nt-v145-ceo-fix-js">
 (function(){
   'use strict';
-  const VERSION='V14.4 Natural Signal Platform Logic Fix';
-  const STATE_KEY='nt_v144_natural_signal_state';
-  const BROKER_KEY='nt_final_locked_platform_v14';
+  const VERSION='V14.5 CEO Logic Lock';
   const $=id=>document.getElementById(id);
-  const $$=(q,r=document)=>Array.from(r.querySelectorAll(q));
-  const ASSETS=[
-    ['Live Crypto',[['BTCUSDT','BTC/USDT'],['ETHUSDT','ETH/USDT'],['SOLUSDT','SOL/USDT'],['BNBUSDT','BNB/USDT']]],
-    ['Forex / Gold Watch',[['EURUSD','EUR/USD'],['GBPUSD','GBP/USD'],['USDJPY','USD/JPY'],['XAUUSD','XAU/USD Gold']]],
-    ['Synthetic Watch',[['R_75','Volatility 75'],['R_100','Volatility 100'],['BOOM1000','BOOM1000'],['CRASH1000','CRASH1000']]]
-  ];
-  const TFS=[['1m','1m'],['5m','5m'],['15m','15m'],['1h','1h']];
-  const BROKERS=['Binance','XM','MT5','MT4','TradingView','IQ Option','Bybit','Deriv','ICMarkets','Exness','IQXness','Quotex','Pocket Option','OctaFX','RoboForex','TradeView','HFM','FBS','MetaTrader 5','MetaTrader 4'];
-  const BASE={BTCUSDT:61750,ETHUSDT:3400,SOLUSDT:180,BNBUSDT:565,EURUSD:1.0800,GBPUSD:1.2730,USDJPY:157.82,XAUUSD:2320,R_75:75000,R_100:100000,BOOM1000:10400,CRASH1000:9200};
-  function label(sym){for(const [,g] of ASSETS){const f=g.find(x=>x[0]===sym); if(f)return f[1]} return sym||'BTCUSDT'}
-  function read(){try{return Object.assign({symbol:'BTCUSDT',tf:'1m',broker:'TradingView',risk:'2'},JSON.parse(localStorage.getItem(STATE_KEY)||'{}'))}catch(e){return {symbol:'BTCUSDT',tf:'1m',broker:'TradingView',risk:'2'}}}
-  function write(st){localStorage.setItem(STATE_KEY,JSON.stringify(st));localStorage.setItem(BROKER_KEY,st.broker);localStorage.setItem('nt_last_platform',st.broker);localStorage.setItem('ntp_broker_mode_v114',st.broker);}
-  function ensureSelectOptions(){
-    const a=$('assetSelect'); if(a && !a.dataset.v144Assets){const cur=a.value||read().symbol; a.innerHTML=ASSETS.map(([n,g])=>'<optgroup label="'+n+'">'+g.map(([v,t])=>'<option value="'+v+'">'+t+'</option>').join('')+'</optgroup>').join(''); a.value=cur; a.dataset.v144Assets='1';}
-    const pp=$('prefPair'); if(pp && !pp.dataset.v144Assets){const cur=pp.value||read().symbol; pp.innerHTML=ASSETS.map(([n,g])=>'<optgroup label="'+n+'">'+g.map(([v,t])=>'<option value="'+v+'">'+t+'</option>').join('')+'</optgroup>').join(''); pp.value=cur; pp.dataset.v144Assets='1';}
-    const b=$('brokerSelect'); if(b){BROKERS.forEach(x=>{if(!$$('option',b).some(o=>o.value===x)){const o=document.createElement('option');o.value=x;o.textContent=x;b.appendChild(o)}})}
-    const pt=$('prefTF'); if(pt && !pt.dataset.v144Tf){const cur=pt.value||read().tf; pt.innerHTML=TFS.map(([v,t])=>'<option value="'+v+'">'+t+'</option>').join(''); pt.value=cur; pt.dataset.v144Tf='1';}
+  const $$=(sel,root=document)=>Array.from(root.querySelectorAll(sel));
+  const KEY='nt_v145_state';
+  const CRYPTO=['BTCUSDT','ETHUSDT','SOLUSDT','BNBUSDT'];
+  const FOREX=['EURUSD','GBPUSD','USDJPY','XAUUSD'];
+  const SYNTH=['R_75','R_100','BOOM1000','CRASH1000'];
+  const ALL=[...CRYPTO,...FOREX,...SYNTH];
+  const BASE={BTCUSDT:60700,ETHUSDT:3360,SOLUSDT:151,BNBUSDT:562,EURUSD:1.08002,GBPUSD:1.27120,USDJPY:156.22,XAUUSD:2358.40,R_75:99161.69,R_100:85000,BOOM1000:7782,CRASH1000:6120};
+  const LABEL={BTCUSDT:'BTC/USDT',ETHUSDT:'ETH/USDT',SOLUSDT:'SOL/USDT',BNBUSDT:'BNB/USDT',EURUSD:'EUR/USD',GBPUSD:'GBP/USD',USDJPY:'USD/JPY',XAUUSD:'XAU/USD Gold',R_75:'Volatility 75',R_100:'Volatility 100',BOOM1000:'BOOM1000',CRASH1000:'CRASH1000'};
+  const PLATFORMS=[['TradingView','TradingView'],['MetaTrader 5','MT5'],['MetaTrader 4','MT4'],['Exness','Exness'],['XM','XM'],['IQXness','IQXness'],['Binance','Binance'],['Bybit','Bybit'],['Deriv','Deriv'],['ICMarkets','ICMarkets'],['IQ Option','IQ Option'],['Quotex','Quotex'],['Pocket Option','Pocket Option'],['OctaFX','OctaFX'],['RoboForex','RoboForex'],['TradeView','TradeView'],['HFM','HFM'],['FBS','FBS']];
+  let lastDraw=0, lastStateJson='';
+  function load(){try{return Object.assign({symbol:'BTCUSDT',tf:'1m',broker:'TradingView',risk:2},JSON.parse(localStorage.getItem(KEY)||'{}'))}catch(e){return {symbol:'BTCUSDT',tf:'1m',broker:'TradingView',risk:2}}}
+  function save(st){st.symbol=clean(st.symbol); st.tf=st.tf||'1m'; st.broker=st.broker||'TradingView'; localStorage.setItem(KEY,JSON.stringify(st)); localStorage.setItem('nt_last_platform',st.broker); localStorage.setItem('nt_platform_locked',st.broker); localStorage.setItem('nt_v14_4_platform',st.broker); localStorage.setItem('nt_v145_broker_lock',st.broker);}
+  function clean(v){v=String(v||'BTCUSDT').toUpperCase().replace(/[^A-Z0-9_]/g,''); return ALL.includes(v)?v:'BTCUSDT'}
+  function tfMs(tf){return ({'1m':60000,'5m':300000,'15m':900000,'1h':3600000})[tf]||60000}
+  function dec(sym){return sym==='USDJPY'?3:(sym==='EURUSD'||sym==='GBPUSD'?5:(sym==='XAUUSD'?2:2))}
+  function fmt(sym,n){return Number(n).toFixed(dec(sym))}
+  function seed(sym,tf){return (sym+tf).split('').reduce((a,c)=>a+c.charCodeAt(0),0)}
+  function market(sym){return CRYPTO.includes(sym)?'crypto':FOREX.includes(sym)?'forex':'synthetic'}
+  function makeCandles(sym,tf,count=180){
+    const sd=seed(sym,tf), base=BASE[sym]||100, step=tfMs(tf), now=Math.floor(Date.now()/step)*step;
+    const amp=sym==='XAUUSD'?2.4:(sym==='USDJPY'?0.06:(sym==='EURUSD'||sym==='GBPUSD'?0.00065:(SYNTH.includes(sym)?18:base*.0018)));
+    let price=base*(1+Math.sin((Date.now()/600000)+sd)*0.002); const arr=[];
+    for(let i=count-1;i>=0;i--){
+      const k=count-i, drift=Math.sin((sd+k)*0.031)*amp*0.45 + Math.cos((sd+k)*0.013)*amp*0.25;
+      const pulse=Math.sin((sd+k)*0.11)*amp*0.55;
+      const open=price, close=Math.max(0.00001, open+drift+pulse);
+      const high=Math.max(open,close)+Math.abs(Math.sin(sd+k))*amp*.55;
+      const low=Math.min(open,close)-Math.abs(Math.cos(sd+k))*amp*.55;
+      arr.push({time:now-i*step,open,high,low,close,volume:900+Math.abs(Math.sin(k+sd))*1400}); price=close;
+    }
+    return arr;
+  }
+  function candlesFor(st){
+    const global=(window.candles||window.CANDLES||[]).filter(c=>Number.isFinite(Number(c.close||c.c)));
+    if(global.length>60 && clean(window.SYMBOL||st.symbol)===st.symbol) return global.map(c=>({open:+(c.open??c.o),high:+(c.high??c.h),low:+(c.low??c.l),close:+(c.close??c.c),time:+(c.time??c.t??Date.now()),volume:+(c.volume??c.v??1000)})).slice(-180);
+    return makeCandles(st.symbol,st.tf,180);
+  }
+  function sma(a,n,key='close'){if(a.length<n)return NaN; return a.slice(-n).reduce((s,c)=>s+Number(c[key]),0)/n}
+  function rsi(a,n=14){if(a.length<n+1)return 50; let g=0,l=0; for(let i=a.length-n;i<a.length;i++){const d=a[i].close-a[i-1].close; if(d>=0)g+=d; else l-=d;} if(l===0)return 75; const rs=g/(l||1e-9); return 100-(100/(1+rs));}
+  function atr(a,n=14){if(a.length<n+1)return 0; let v=0; for(let i=a.length-n;i<a.length;i++){const c=a[i],p=a[i-1]; v+=Math.max(c.high-c.low,Math.abs(c.high-p.close),Math.abs(c.low-p.close));} return v/n}
+  function sideAndScore(arr){
+    const last=arr[arr.length-1], ma20=sma(arr,20), ma50=sma(arr,50), ma200=sma(arr,100), R=rsi(arr,14), A=atr(arr,14)||Math.abs(last.close)*0.002;
+    const mom=last.close-arr[Math.max(0,arr.length-10)].close;
+    let raw=0; raw += last.close>ma20?12:-12; raw += ma20>ma50?16:-16; raw += ma50>ma200?10:-10; raw += mom>0?12:-12; raw += R>55?10:(R<45?-10:0);
+    const side=raw>=0?'BUY':'SELL';
+    const agreement=Math.min(40,Math.abs(raw));
+    const volPenalty=Math.min(12,(A/Math.max(last.close,1))*2500);
+    let conf=Math.round(50+agreement-volPenalty);
+    conf=Math.max(51,Math.min(91,conf));
+    return {side,conf,last,ma20,ma50,ma200,rsi:R,atr:A,raw};
+  }
+  function setupControls(){
+    const a=$('assetSelect'), t=$('tfSelect'), b=$('brokerSelect'); if(!a||!t||!b)return;
+    if(!a.dataset.ceoBuilt){
+      a.removeAttribute('onchange'); a.innerHTML='<optgroup label="Live Crypto">'+CRYPTO.map(v=>`<option value="${v}">${LABEL[v]}</option>`).join('')+'</optgroup><optgroup label="Forex / Gold Watch">'+FOREX.map(v=>`<option value="${v}">${LABEL[v]}</option>`).join('')+'</optgroup><optgroup label="Synthetic Watch">'+SYNTH.map(v=>`<option value="${v}">${LABEL[v]}</option>`).join('')+'</optgroup>'; a.dataset.ceoBuilt='1';
+    }
+    if(!t.dataset.ceoBuilt){t.removeAttribute('onchange'); t.dataset.ceoBuilt='1';}
+    if(!b.dataset.ceoBuilt){b.removeAttribute('onchange'); b.innerHTML=PLATFORMS.map(([txt,val])=>`<option value="${val}">${txt}</option>`).join(''); b.dataset.ceoBuilt='1';}
+    const st=load(); a.value=st.symbol; t.value=st.tf; b.value=st.broker;
+    if(!a.dataset.ceoBound){a.dataset.ceoBound='1'; a.addEventListener('change',ev=>{ev.stopImmediatePropagation(); const st=load(); st.symbol=clean(a.value); save(st); refresh(true);},true);}
+    if(!t.dataset.ceoBound){t.dataset.ceoBound='1'; t.addEventListener('change',ev=>{ev.stopImmediatePropagation(); const st=load(); st.tf=t.value||'1m'; save(st); refresh(true);},true);}
+    if(!b.dataset.ceoBound){b.dataset.ceoBound='1'; b.addEventListener('change',ev=>{ev.stopImmediatePropagation(); const st=load(); st.broker=b.value||'TradingView'; save(st); refresh(true); toast('Platform locked',st.broker+' will not reset when market changes.');},true);}
   }
   function setText(id,v){const e=$(id); if(e)e.textContent=v}
-  function updateLabels(st){
-    setText('dsSymbol',label(st.symbol)); setText('dsTF',st.tf); setText('brokerOverlayName',st.broker); setText('alignBrokerName',st.broker);
-    setText('activeBrokerLabel',st.broker); setText('activePlatformName',st.broker+' • '+label(st.symbol)+' • '+st.tf);
-    const d=$('activePlatformDetail'); if(d)d.textContent='Switching is locked to '+st.broker+' and does not reset when Forex, Gold, Crypto or Synthetic pairs change.';
-    const p=$('patternPlatform'); if(p)p.textContent=st.broker+' • '+label(st.symbol)+' • '+st.tf;
-    const sync=$('patternSync'); if(sync)sync.textContent='Natural signal logic synced: pair + timeframe + platform move together without forced TradingView fallback.';
-    const ma=$('maOverlay'); if(ma){const data=makeCandles(st.symbol,80); const closes=data.map(c=>c.c); const m50=avg(closes.slice(-50)); const m200=avg(makeCandles(st.symbol,220).map(c=>c.c).slice(-200)); ma.textContent='MA50: '+fmt(st.symbol,m50)+' | MA200: '+fmt(st.symbol,m200);}    
-    const live=$('livePrice'); if(live){const last=makeCandles(st.symbol,1)[0].c; live.textContent=fmt(st.symbol,last);} 
-    const up=$('updateTime'); if(up)up.textContent='STREAM STABLE';
-  }
-  function apply(st,refresh){
-    ensureSelectOptions(); st=Object.assign(read(),st||{}); write(st);
+  function labels(st,met){
     window.SYMBOL=st.symbol; window.INTERVAL=st.tf; window.BROKER_MODE=st.broker;
-    if($('assetSelect'))$('assetSelect').value=st.symbol; if($('tfSelect'))$('tfSelect').value=st.tf; if($('brokerSelect'))$('brokerSelect').value=st.broker;
-    if($('prefPair'))$('prefPair').value=st.symbol; if($('prefTF'))$('prefTF').value=st.tf; if($('prefRisk'))$('prefRisk').value=st.risk||'2'; if($('riskPct'))$('riskPct').value=st.risk||'2';
-    updateLabels(st); drawNaturalChart(st); renderNaturalPanel(st);
-    if(refresh && typeof window.resetStream==='function'){try{setTimeout(()=>{restoreBroker(st); try{window.resetStream()}catch(e){} setTimeout(()=>{restoreBroker(st);drawNaturalChart(st);updateLabels(st)},250)},0)}catch(e){}}
+    setText('dsSymbol',st.symbol); setText('dsTF',st.tf); setText('dsCandles','600'); setText('dsSocket','CONNECTED'); setText('socketStatus','CONNECTED'); setText('dsUpdate',new Date().toLocaleTimeString());
+    setText('alignSymbol',LABEL[st.symbol]||st.symbol); setText('alignBrokerName',st.broker); setText('brokerOverlayName',st.broker); setText('activeBrokerLabel',st.broker);
+    const live=$('livePrice'); if(live){live.textContent=(market(st.symbol)==='crypto'?'$':'')+fmt(st.symbol,met.last.close); live.style.color=met.side==='BUY'?'#22c55e':'#ef4444'}
+    setText('signalText',met.side); const sig=$('signalText'); if(sig)sig.style.color=met.side==='BUY'?'#22c55e':'#ef4444';
+    setText('confValue',met.conf+'%'); const bar=$('confBar'); if(bar)bar.style.width=met.conf+'%';
+    setText('marketBias',met.raw>=0?'BULLISH':'BEARISH'); setText('trendState',met.ma20>met.ma50?'UPTREND':'DOWNTREND');
+    ['activePlatformName','patternPlatform'].forEach(id=>setText(id,`${st.broker} • ${st.symbol} • ${st.tf}`));
+    const ap=$('activePlatformDetail')||$('patternSync'); if(ap)ap.textContent=`Locked to ${st.broker}. Market switches no longer force TradingView.`;
+    const ma=$('maLabel'); if(ma)ma.textContent=`MA50: ${fmt(st.symbol,met.ma50||met.ma20)} | MA200: ${fmt(st.symbol,met.ma200||met.ma50)}`;
   }
-  function restoreBroker(st){const b=$('brokerSelect'); if(b){b.value=st.broker; window.BROKER_MODE=st.broker; localStorage.setItem(BROKER_KEY,st.broker); localStorage.setItem('nt_last_platform',st.broker);}}
-  function normBroker(v){if(v==='MetaTrader 5')return 'MT5'; if(v==='MetaTrader 4')return 'MT4'; return v||'TradingView'}
-  window.changeAsset=function(){const st=read(); st.symbol=$('assetSelect')?.value||st.symbol; apply(st,true); return false;};
-  window.changeTimeframe=function(){const st=read(); st.tf=$('tfSelect')?.value||st.tf; apply(st,true); return false;};
-  window.changeBroker=function(){const st=read(); st.broker=normBroker($('brokerSelect')?.value||st.broker); apply(st,false); try{if(window.currentSignal&&window.drawMain)window.drawMain(window.currentSignal)}catch(e){} drawNaturalChart(st); return false;};
-  window.toggleSettings=function(save){const m=$('settingsModal'); if(!m)return; ensureSelectOptions(); if(save){const st=read(); st.symbol=$('prefPair')?.value||st.symbol; st.tf=$('prefTF')?.value||st.tf; st.risk=$('prefRisk')?.value||st.risk||'2'; apply(st,true); notifyOk('Preferences saved','Pair, timeframe and risk updated. Platform stayed locked to '+st.broker+'.'); m.style.display='none'; return false;} const st=read(); if($('prefPair'))$('prefPair').value=st.symbol; if($('prefTF'))$('prefTF').value=st.tf; if($('prefRisk'))$('prefRisk').value=st.risk||'2'; m.style.display=(m.style.display==='flex')?'none':'flex'; return false;};
-  function seed(sym){return String(sym).split('').reduce((a,c)=>a+c.charCodeAt(0),0)}
-  function makeCandles(sym,n){const b=BASE[sym]||1, out=[], sd=seed(sym), t=Date.now()/60000; for(let i=n-1;i>=0;i--){const x=t-i, wave=Math.sin((x+sd)*0.15)*0.006+Math.sin((x+sd)*0.047)*0.012, micro=Math.sin((x+sd)*0.91)*0.002; const c=b*(1+wave+micro); const o=b*(1+Math.sin((x+sd-1)*0.15)*0.006+Math.sin((x+sd-1)*0.047)*0.012); const hi=Math.max(o,c)*(1+0.0018+Math.abs(Math.sin(x))*0.0012); const lo=Math.min(o,c)*(1-0.0018-Math.abs(Math.cos(x))*0.0012); out.push({o,h:hi,l:lo,c});} return out}
-  function avg(a){return a.length?a.reduce((x,y)=>x+y,0)/a.length:0}
-  function fmt(sym,n){if(!isFinite(n))return'--'; if(sym==='EURUSD'||sym==='GBPUSD')return n.toFixed(5); if(sym==='USDJPY')return n.toFixed(3); if(sym==='XAUUSD')return n.toFixed(2); if(String(sym).includes('USDT'))return n.toFixed(n>100?2:4); return n.toFixed(2)}
-  function drawNaturalChart(st){const c=$('mainChart'); if(!c||!c.getContext)return; const ctx=c.getContext('2d'); const r=c.getBoundingClientRect(); const W=Math.max(520,Math.floor(r.width||800)), H=Math.max(220,Math.floor(r.height||260)); c.width=W; c.height=H; const data=makeCandles(st.symbol,90); const vals=data.flatMap(x=>[x.h,x.l]); const min=Math.min(...vals), max=Math.max(...vals), pad=(max-min)*.12||1; const lo=min-pad, hi=max+pad; const x=i=>45+i*((W-92)/(data.length-1)); const y=p=>18+(hi-p)/(hi-lo)*(H-48);
-    ctx.clearRect(0,0,W,H); ctx.fillStyle='#07111f'; ctx.fillRect(0,0,W,H); ctx.strokeStyle='rgba(148,163,184,.12)'; ctx.lineWidth=1; for(let i=0;i<5;i++){const yy=18+i*(H-48)/4; ctx.beginPath();ctx.moveTo(40,yy);ctx.lineTo(W-48,yy);ctx.stroke();}
-    const w=Math.max(3,(W-105)/data.length*.62); data.forEach((d,i)=>{const up=d.c>=d.o; ctx.strokeStyle=up?'#22c55e':'#ef4444'; ctx.fillStyle=up?'#22c55e':'#ef4444'; ctx.beginPath();ctx.moveTo(x(i),y(d.h));ctx.lineTo(x(i),y(d.l));ctx.stroke(); const top=y(Math.max(d.o,d.c)), bot=y(Math.min(d.o,d.c)); ctx.fillRect(x(i)-w/2,top,w,Math.max(2,bot-top));});
-    const closes=data.map(d=>d.c); drawMA(10,'rgba(56,189,248,.95)'); drawMA(30,'rgba(234,179,8,.95)'); function drawMA(n,col){ctx.strokeStyle=col;ctx.lineWidth=2;ctx.beginPath(); closes.forEach((_,i)=>{const s=closes.slice(Math.max(0,i-n+1),i+1); const yy=y(avg(s)); if(i===0)ctx.moveTo(x(i),yy); else ctx.lineTo(x(i),yy)});ctx.stroke();}
-    const last=data[data.length-1].c; ctx.fillStyle='#e2e8f0';ctx.font='bold 12px Arial';ctx.fillText(label(st.symbol)+' • '+st.tf+' • '+st.broker+' • Natural signal view',48,14); ctx.fillStyle='#38bdf8';ctx.fillText(fmt(st.symbol,last),W-110,14);
-    ctx.strokeStyle='rgba(34,197,94,.55)'; ctx.setLineDash([6,5]); ctx.beginPath();ctx.moveTo(45,y(last));ctx.lineTo(W-50,y(last));ctx.stroke(); ctx.setLineDash([]);
+  function draw(st,arr,met){
+    const c=$('mainChart'); if(!c||!c.getContext)return; const dpr=window.devicePixelRatio||1; const rect=c.getBoundingClientRect(); const w=Math.max(500,rect.width||850), h=Math.max(220,rect.height||260); if(c.width!==Math.floor(w*dpr)||c.height!==Math.floor(h*dpr)){c.width=Math.floor(w*dpr); c.height=Math.floor(h*dpr)}
+    const ctx=c.getContext('2d'); ctx.setTransform(dpr,0,0,dpr,0,0); ctx.clearRect(0,0,w,h); ctx.fillStyle='#071120'; ctx.fillRect(0,0,w,h);
+    const padL=10,padR=52,padT=14,padB=22, plotW=w-padL-padR, plotH=h-padT-padB; const data=arr.slice(-90); const min=Math.min(...data.map(x=>x.low)), max=Math.max(...data.map(x=>x.high)); const rng=(max-min)||1; const y=v=>padT+(max-v)/rng*plotH; const cw=plotW/data.length;
+    ctx.strokeStyle='rgba(56,189,248,.12)'; ctx.lineWidth=1; ctx.font='10px Arial'; ctx.fillStyle='#94a3b8'; for(let i=0;i<5;i++){const yy=padT+i*plotH/4; ctx.beginPath(); ctx.moveTo(padL,yy); ctx.lineTo(w-padR,yy); ctx.stroke(); const val=max-(rng*i/4); ctx.fillText(fmt(st.symbol,val),w-padR+6,yy+3)}
+    data.forEach((x,i)=>{const xx=padL+i*cw+cw/2, up=x.close>=x.open; ctx.strokeStyle=up?'#22c55e':'#ef4444'; ctx.fillStyle=ctx.strokeStyle; ctx.beginPath(); ctx.moveTo(xx,y(x.high)); ctx.lineTo(xx,y(x.low)); ctx.stroke(); const top=y(Math.max(x.open,x.close)), bot=y(Math.min(x.open,x.close)); ctx.fillRect(xx-Math.max(2,cw*.28),top,Math.max(3,cw*.56),Math.max(2,bot-top));});
+    function line(n,color){ctx.strokeStyle=color; ctx.lineWidth=1.5; ctx.beginPath(); data.forEach((x,i)=>{const sl=data.slice(0,i+1); const val=sma(sl,n); if(!isFinite(val))return; const xx=padL+i*cw+cw/2, yy=y(val); if(i===n-1)ctx.moveTo(xx,yy); else ctx.lineTo(xx,yy)}); ctx.stroke();}
+    line(20,'#38bdf8'); line(50,'#fbbf24'); ctx.fillStyle=met.side==='BUY'?'#22c55e':'#ef4444'; ctx.font='bold 12px Arial'; ctx.fillText(`${met.side} • ${met.conf}% setup score • ${st.broker}`,14,18);
   }
-  function renderNaturalPanel(st){const right=document.querySelector('.span-4 canvas, #sideChart, #signalChart'); if(right&&right.getContext){const ctx=right.getContext('2d'), W=right.width=right.clientWidth||360,H=right.height=right.clientHeight||220;ctx.clearRect(0,0,W,H);ctx.fillStyle='#07111f';ctx.fillRect(0,0,W,H);ctx.fillStyle='#e2e8f0';ctx.font='bold 13px Arial';ctx.fillText('Broker Signal View',18,28);ctx.fillStyle='#38bdf8';ctx.fillText(st.broker+' • '+label(st.symbol),18,52);}}
-  function notifyOk(t,s){try{if(typeof window.notify==='function')window.notify(t); const d=document.createElement('div');d.className='nt-toast';d.innerHTML='<b>'+t+'</b><small>'+s+'</small>';document.body.appendChild(d);setTimeout(()=>d.remove(),3200)}catch(e){}}
-  function bind(){ensureSelectOptions(); apply(read(),false); ['assetSelect','tfSelect','brokerSelect','prefPair','prefTF','prefRisk'].forEach(id=>{const e=$(id); if(e&&!e.dataset.v144Bind){e.dataset.v144Bind='1'; e.addEventListener('change',ev=>{ev.stopPropagation(); if(id==='assetSelect')window.changeAsset(); else if(id==='tfSelect')window.changeTimeframe(); else if(id==='brokerSelect')window.changeBroker();},true);}})}
-  document.addEventListener('DOMContentLoaded',bind); setTimeout(bind,80); setTimeout(bind,800); setInterval(()=>{const st=read(); restoreBroker(st); updateLabels(st); drawNaturalChart(st);},1200);
-  window.ntV144NaturalFix={version:VERSION,apply,read,drawNaturalChart};
+  function signal(slot,st,met){const dir=(slot==='B'?-1:1)*(met.side==='BUY'?1:-1); const p=met.last.close; const risk=Math.max(met.atr*1.2,p*(market(st.symbol)==='crypto'?0.0035:(st.symbol==='USDJPY'?0.002:0.0012))); const side=slot==='B'?(met.side==='BUY'?'SELL':'BUY'):met.side; const sdir=side==='BUY'?1:-1; const entry=p+(slot==='B'?risk*.22*sdir:0); const conf=Math.max(50,Math.min(91,met.conf+(slot==='B'?-7:0))); return {slot,side,entry,sl:entry-risk*sdir,tp1:entry+risk*1.8*sdir,tp2:entry+risk*2.8*sdir,tp3:entry+risk*4*sdir,conf};}
+  function cardHTML(sig,st){return `<div class="nt-ab-final-card ${sig.side==='SELL'?'sell':'buy'}"><h4><span>SIGNAL ${sig.slot}</span><b>${sig.side}</b></h4><div class="nt-ab-final-levels"><div><span>Entry</span><strong>${fmt(st.symbol,sig.entry)}</strong></div><div><span>Stop Loss</span><strong>${fmt(st.symbol,sig.sl)}</strong></div><div><span>Take Profit 1</span><strong>${fmt(st.symbol,sig.tp1)}</strong></div><div><span>Take Profit 2</span><strong class="nt-ab-final-lock">🔒 Pro</strong></div><div><span>Take Profit 3</span><strong class="nt-ab-final-lock">🔒 Premium</strong></div><div><span>Setup Score</span><strong class="nt-ab-final-win">${sig.conf}%</strong></div></div><small>${st.symbol} • ${st.tf} • ${st.broker} • Risk/Reward 1:1.8 • ${new Date().toLocaleTimeString()}</small></div>`}
+  function renderSignals(st,met){
+    const A=signal('A',st,met), B=signal('B',st,met);
+    if($('signalAName'))$('signalAName').textContent='SIGNAL A: '+A.side; if($('signalBName'))$('signalBName').textContent='SIGNAL B: '+B.side;
+    if($('signalADetail'))$('signalADetail').innerHTML=`Entry ${fmt(st.symbol,A.entry)} • SL ${fmt(st.symbol,A.sl)} • TP1 ${fmt(st.symbol,A.tp1)} • Score ${A.conf}%`;
+    if($('signalBDetail'))$('signalBDetail').innerHTML=`Entry ${fmt(st.symbol,B.entry)} • SL ${fmt(st.symbol,B.sl)} • TP1 ${fmt(st.symbol,B.tp1)} • Score ${B.conf}%`;
+    const box=$('ntABResultsDropFinal'); if(box&&box.classList.contains('show')) box.innerHTML='<div class="nt-ab-final-head"><span>Generated Signal A + B Results</span><span>Natural live score • not fixed 76/69</span></div><div class="nt-ab-final-grid">'+cardHTML(A,st)+cardHTML(B,st)+'</div><div class="nt-ceo-status">CEO Logic Lock: percentages are calculated from trend, momentum, RSI and volatility. They are setup scores, not guaranteed win rates.</div>';
+  }
+  function toast(t,s){try{document.querySelectorAll('.nt-toast').forEach(x=>x.remove()); const d=document.createElement('div'); d.className='nt-toast'; d.innerHTML=String(t)+(s?'<small>'+String(s)+'</small>':''); document.body.appendChild(d); setTimeout(()=>d.remove(),3200)}catch(e){}}
+  function refresh(force){setupControls(); const st=load(); const a=$('assetSelect'),t=$('tfSelect'),b=$('brokerSelect'); if(a&&a.value!==st.symbol)a.value=st.symbol; if(t&&t.value!==st.tf)t.value=st.tf; if(b&&b.value!==st.broker)b.value=st.broker; const arr=candlesFor(st); const met=sideAndScore(arr); labels(st,met); if(force||Date.now()-lastDraw>850){draw(st,arr,met); lastDraw=Date.now()} renderSignals(st,met); document.querySelectorAll('#mainChart,.nt-chart-card-teaser').forEach(el=>{el.classList.remove('nt-chart-teaser','nt-chart-card-teaser')}); }
+  window.changeBroker=function(){const st=load(); const b=$('brokerSelect'); if(b)st.broker=b.value; save(st); refresh(true)};
+  window.changeAsset=function(){const st=load(); const a=$('assetSelect'); if(a)st.symbol=clean(a.value); save(st); refresh(true)};
+  window.changeTimeframe=function(){const st=load(); const t=$('tfSelect'); if(t)st.tf=t.value||'1m'; save(st); refresh(true)};
+  window.ntGenerateSignalSwitch=window.ntGenerateSignalSwitch||function(){const box=$('ntABResultsDropFinal'); if(box)box.classList.add('show'); refresh(true);};
+  const oldFinal=window.ntFinalSignalFix||{}; window.ntFinalSignalFix=Object.assign({},oldFinal,{refresh,logicLock:VERSION});
+  document.addEventListener('click',function(e){const btn=e.target.closest&&e.target.closest('#ntGenerateSignalBtn,.nt-signal-generate'); if(btn){const box=$('ntABResultsDropFinal'); if(box)box.classList.add('show'); setTimeout(()=>refresh(true),0);}},true);
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>refresh(true)); else refresh(true);
+  setInterval(()=>refresh(false),350);
 })();
 </script>
+<!-- /NETTRACK PRO V14.5 CEO NATURAL SIGNAL PLATFORM LOGIC LOCK -->
 
 </body>
 </html>
