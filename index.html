@@ -6309,5 +6309,95 @@ body{
 </script>
 <!-- /NETTRACK PRO V14.5 CEO NATURAL SIGNAL PLATFORM LOGIC LOCK -->
 
+<style>#ntTradeChat{position:fixed;right:20px;bottom:20px;width:330px;z-index:9999}</style>
+/* NETTRACK PRO V14.5 PATCH PACK */
+(function(){
+function ntPatch(){
+  // Fix preferences save reliability
+  window.toggleSettings = function(save=false){
+    const m=document.getElementById("settingsModal");
+    if(!m) return;
+    if(save){
+      const risk=document.getElementById("prefRisk").value||2;
+      window.SYMBOL=document.getElementById("prefPair").value;
+      window.INTERVAL=document.getElementById("prefTF").value;
+      const a=document.getElementById("assetSelect"), t=document.getElementById("tfSelect"), r=document.getElementById("riskPct");
+      if(a)a.value=window.SYMBOL;
+      if(t)t.value=window.INTERVAL;
+      if(r)r.value=risk;
+      if(typeof saveGlobalSettings==="function") saveGlobalSettings();
+      if(typeof resetStream==="function") resetStream();
+      if(typeof notify==="function") notify("Preferences Saved");
+      localStorage.setItem("nt_preferences_saved","true");
+      m.style.display="none";
+      return;
+    }
+    m.style.display=m.style.display==="flex"?"none":"flex";
+  };
+
+  // Unlock live information after generated signal
+  const observer=new MutationObserver(()=>{
+    document.querySelectorAll(".premium-locked").forEach(el=>{
+      const text=(el.innerText||"").toLowerCase();
+      if(window.currentSignal || text.includes("generate 2 signals")){
+        el.classList.remove("premium-locked");
+      }
+    });
+  });
+  observer.observe(document.body,{childList:true,subtree:true,characterData:true});
+
+  // Live trading assistant panel
+  if(!document.getElementById("ntTradeChat")){
+    const box=document.createElement("div");
+    box.id="ntTradeChat";
+    box.className="card";
+    box.innerHTML=`
+    <h3>Trading Assistant Chat</h3>
+    <div id="ntChatLog" style="height:140px;overflow:auto;background:#08101f;padding:10px;border-radius:8px">
+    Assistant ready. Select MT4, MT5, Exness, IQ Option, Deriv or broker mode.
+    </div>
+    <div style="display:flex;gap:8px;margin-top:8px">
+    <input id="ntChatInput" placeholder="Ask about entry, stop loss, take profit..." style="flex:1">
+    <button class="btn btn-success" id="ntChatSend">Send</button>
+    </div>`;
+    document.body.appendChild(box);
+    document.getElementById("ntChatSend").onclick=function(){
+      const i=document.getElementById("ntChatInput");
+      const l=document.getElementById("ntChatLog");
+      if(!i.value)return;
+      l.innerHTML+="<br><b>User:</b> "+i.value;
+      l.innerHTML+="<br><b>Assistant:</b> Checking market context. Wait for confirmation before entering.";
+      i.value="";
+      l.scrollTop=l.scrollHeight;
+    };
+  }
+
+  // Notification option
+  if(!document.getElementById("ntNotifyBtn")){
+    const b=document.createElement("button");
+    b.id="ntNotifyBtn";
+    b.className="btn btn-outline";
+    b.innerText="🔔 WIN ALERTS";
+    b.onclick=async()=>{
+      if(Notification && Notification.permission!=="granted") await Notification.requestPermission();
+      if(Notification.permission==="granted") new Notification("NetTrack Alerts Enabled");
+      if(typeof notify==="function") notify("Win alerts enabled");
+    };
+    document.body.appendChild(b);
+  }
+
+  // Risk heads-up before generation
+  window.ntSignalGuard=function(signal){
+    const msg="Market confirmation check: avoid forcing a trade too early. Waiting for stronger confirmation may improve setup quality.";
+    if(!signal || signal.quality<60){
+      if(typeof notify==="function") notify(msg);
+      return false;
+    }
+    return true;
+  };
+}
+if(document.readyState==="loading") document.addEventListener("DOMContentLoaded",ntPatch);
+else ntPatch();
+})();
 </body>
 </html>
